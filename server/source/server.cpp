@@ -2,7 +2,7 @@
 
 using namespace std;
 
-Server::Server(){
+Server::Server(const string path){
 
 }
 

@@ -15,7 +15,6 @@ $(BUILD_DIR):
 $(BUILD_DIR)/Main.o: $(SRC_DIR)/main.cpp $(HEADER_DIR)/server.hpp
 	$(CFLAGS) -c $(SRC_DIR)/main.cpp -o $(BUILD_DIR)/Main.o
 
-
 $(BUILD_DIR)/Server.o: $(SRC_DIR)/server.cpp $(HEADER_DIR)/server.hpp
 	$(CFLAGS) -c $(SRC_DIR)/server.cpp -o $(BUILD_DIR)/Server.o
 
@@ -24,6 +23,6 @@ Server.out: $(OBJECTS)
 
 .PHONY: clean
 clean:
-	rm $(BUILD_DIR) *.o
-	rm $(BUILD_DIR) *.out
+	rm -rf $(BUILD_DIR) *.o
+	rm -rf $(BUILD_DIR) *.out
 	

@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "user.hpp"
+#include "configReader.hpp"
 
 class Server{
 public:
@@ -11,7 +12,7 @@ public:
     void run();
 
 private:
-    // ConfigReader configReader;
+    ConfigReader configReader;
     std::vector<std::string> fileNames;
     std::vector<User> users;
 };

@@ -12,10 +12,10 @@ all: $(BUILD_DIR) Server.out
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
 
-$(BUILD_DIR)/Main.o: $(SRC_DIR)/main.cpp $(HEADER_DIR)/server.hpp
+$(BUILD_DIR)/Main.o: $(SRC_DIR)/main.cpp $(HEADER_DIR)/user.hpp $(HEADER_DIR)/server.hpp
 	$(CFLAGS) -c $(SRC_DIR)/main.cpp -o $(BUILD_DIR)/Main.o
 
-$(BUILD_DIR)/Server.o: $(SRC_DIR)/server.cpp $(HEADER_DIR)/server.hpp
+$(BUILD_DIR)/Server.o: $(SRC_DIR)/server.cpp $(HEADER_DIR)/user.hpp $(HEADER_DIR)/server.hpp
 	$(CFLAGS) -c $(SRC_DIR)/server.cpp -o $(BUILD_DIR)/Server.o
 
 Server.out: $(OBJECTS)

@@ -3,8 +3,12 @@
 
 #include <string>
 #include <vector>
+#include <fstream>
 
 #include "user.hpp"
+#include "Json.hpp"
+
+using json = nlohmann::json;
 
 class ConfigReader{
 public:
@@ -13,6 +17,7 @@ public:
     std::vector<std::string> getFilesNames();
     std::vector<User> getUsers();
     void readConfigFile();
+    // void addUser(auto record);
 private:
     std::string path;
     std::vector<std::string> fileNames;

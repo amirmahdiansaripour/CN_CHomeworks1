@@ -4,11 +4,11 @@ HEADER_DIR = header
 CFLAGS = g++ -std=c++11 -I$(HEADER_DIR)
 
 OBJECTS = \
-	$(BUILD_DIR)/Server.o		\
-	$(BUILD_DIR)/Main.o			\
-	$(BUILD_DIR)/User.o			\
-	$(BUILD_DIR)/ConfigReader.o	\
-	$(BUILD_DIR)/MessageHandler.o
+	$(BUILD_DIR)/Server.o			\
+	$(BUILD_DIR)/Main.o				\
+	$(BUILD_DIR)/User.o				\
+	$(BUILD_DIR)/ConfigReader.o		\
+	$(BUILD_DIR)/MessageHandler.o	\
 
 all: $(BUILD_DIR) Server.out
 

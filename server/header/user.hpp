@@ -5,11 +5,13 @@
 
 class User{
 public:
-    User(const std::string username,
-        const std::string password);
+    User(std::string, std::string, int, bool);
+    void printUserData();
 private:
     std::string username;
     std::string password;
+    int maxDownloadSize;
+    bool isAdmin;
 };
 
 #endif

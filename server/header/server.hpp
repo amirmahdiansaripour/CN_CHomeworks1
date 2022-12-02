@@ -10,6 +10,7 @@ class Server{
 public:
     Server(const std::string configPath);
     void run();
+    void* handleConnection(void* command, void* command_id);
 
 private:
     ConfigReader configReader;

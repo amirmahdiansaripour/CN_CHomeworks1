@@ -1,4 +1,5 @@
 #include "../header/server.hpp"
+#include "../header/messageHandler.hpp"
 
 using namespace std;
 
@@ -11,5 +12,10 @@ Server::Server(const string path){
 }
 
 void Server::run(){
-    
+
+}
+
+void* Server::handleConnection(void* command, void* command_id){
+    MessageHandler* messageHandler = new MessageHandler(*(int* ) command_id);
+    // connections and reqs from clients are handled here.
 }

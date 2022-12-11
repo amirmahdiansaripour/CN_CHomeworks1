@@ -23,6 +23,14 @@ ConfigReader::ConfigReader(){
 //     users.push_back(newUser);
 // }
 
+void ConfigReader::printData(){
+    for(User user : users){
+        user.printUserData();
+    }
+    for(string fileName : fileNames){
+        cout << fileName << "\n";
+    }
+}
 
 void ConfigReader::readConfigFile(){
     ifstream inputFile(path);
@@ -37,10 +45,13 @@ void ConfigReader::readConfigFile(){
             isAdmin = true;
         int size = stoi(record["size"].get<string>());
         User newUser = User(username, password, size, isAdmin);
-        // newUser.printUserData();
         users.push_back(newUser);
     }
 
+    for(auto fileRecord: j["files"])
+        fileNames.push_back(fileRecord.get<string>());
+
+    printData();
 
 }
 

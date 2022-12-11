@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <iostream>
 
 #include "user.hpp"
 #include "Json.hpp"
@@ -17,6 +18,7 @@ public:
     std::vector<std::string> getFilesNames();
     std::vector<User> getUsers();
     void readConfigFile();
+    void printData();
     // void addUser(auto record);
 private:
     std::string path;

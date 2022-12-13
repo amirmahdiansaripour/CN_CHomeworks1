@@ -28,7 +28,7 @@ $(BUILD_DIR)/User.o: $(SRC_DIR)/user.cpp $(HEADER_DIR)/user.hpp
 $(BUILD_DIR)/ConfigReader.o: $(SRC_DIR)/configReader.cpp $(HEADER_DIR)/user.hpp $(HEADER_DIR)/configReader.hpp
 	$(CFLAGS) -c $(SRC_DIR)/configReader.cpp -o $(BUILD_DIR)/ConfigReader.o
 
-$(BUILD_DIR)/MessageHandler.o: $(SRC_DIR)/messageHandler.cpp $(HEADER_DIR)/messageHandler.hpp $(HEADER_DIR)/response.hpp
+$(BUILD_DIR)/MessageHandler.o: $(SRC_DIR)/messageHandler.cpp $(HEADER_DIR)/messageHandler.hpp $(HEADER_DIR)/response.hpp $(HEADER_DIR)/user.hpp
 	$(CFLAGS) -c $(SRC_DIR)/messageHandler.cpp -o $(BUILD_DIR)/MessageHandler.o
 
 $(BUILD_DIR)/Response.o: $(SRC_DIR)/response.cpp $(HEADER_DIR)/response.hpp

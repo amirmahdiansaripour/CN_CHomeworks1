@@ -18,3 +18,11 @@ void User::printUserData(){
     cout << "isAdmin: " << isAdmin << "\n";
     cout << "\n\n";
 }
+
+bool User::identicalUsername(string username_) {
+    return username == username_;
+}
+
+bool User::isCorrectPassword(string inputPassword) {
+    return inputPassword == password;
+}

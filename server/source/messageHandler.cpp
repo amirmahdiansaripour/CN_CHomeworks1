@@ -19,8 +19,9 @@ vector<string> parseMessage(string message) {
     return parsedMessage;
 }
 
-MessageHandler::MessageHandler(int id_){
+MessageHandler::MessageHandler(int id_, vector<User> _users){
     id = id_;
+    users = _users;
 }
 
 string MessageHandler::handle(string message){
@@ -32,7 +33,12 @@ string MessageHandler::handle(string message){
         if (command == USER_SIGNIN)
         {
             string username = parsedMessage[1];
-            return response.getResponseMessage(handleUsername(username));
+            return response.getResponseMessage(loginUsername(username));
+        }
+        else if (command == PASS_SIGNIN) 
+        {
+            string password = parsedMessage[1];
+            return response.getResponseMessage(loginPassword(password));
         }
     }
     catch (exception e) {
@@ -40,4 +46,34 @@ string MessageHandler::handle(string message){
     }
     // response to each message is provided here.
     return NULL;
+}
+
+int MessageHandler::loginUsername(string username) 
+{
+    for(User u: users) 
+    {
+        if(u.identicalUsername(username)) {
+            return USERNAME_FOUND;
+        }
+    }
+    return INVALID_USER_PASS;
+}
+
+int MessageHandler::loginPassword(string password) 
+{
+    if(!incompleteLogin) {
+        return PASS_WITHOUT_USER;
+    }
+    
+    else if(incompleteLoginUser->isCorrectPassword(password)) {
+        incompleteLogin = false;
+        loggedIn = true;
+        currentUser = incompleteLoginUser;
+        incompleteLoginUser = nullptr;
+        return SUCCESSFUL_LOGIN;
+    }
+    else {
+        return INVALID_USER_PASS;
+    }
+
 }

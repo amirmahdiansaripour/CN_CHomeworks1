@@ -51,7 +51,7 @@ void ConfigReader::readConfigFile(){
     for(auto fileRecord: j["files"])
         fileNames.push_back(fileRecord.get<string>());
 
-    printData();
+    // printData();
 
 }
 

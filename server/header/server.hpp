@@ -16,6 +16,8 @@ private:
     ConfigReader configReader;
     std::vector<std::string> fileNames;
     std::vector<User> users;
+    int setupServer(int port);
+    int acceptClient(int serverFd);
 };
 
 #endif

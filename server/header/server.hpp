@@ -1,10 +1,18 @@
 #ifndef SERVER_H
 #define SERVER_H
-#include <string>
-#include <vector>
 
 #include "user.hpp"
 #include "configReader.hpp"
+
+#include <string>
+#include <vector>
+#include <sys/socket.h>
+#include <iostream>
+#include <string>
+#include <arpa/inet.h>
+#include <sys/time.h>
+#include <netinet/in.h>
+#include <unistd.h>
 
 class Server{
 public:

@@ -3,14 +3,6 @@
 
 using namespace std;
 
-#include <sys/socket.h>
-#include <iostream>
-#include <string>
-#include <arpa/inet.h>
-#include <sys/time.h>
-#include <netinet/in.h>
-#include <unistd.h>
-
 Server::Server(const string path){
 
     configReader = ConfigReader(path);
@@ -44,7 +36,7 @@ int Server::setupServer(int port)
 
     bind(serverFd, (struct sockaddr*)& address, sizeof(address));
 
-    listen(serverFd, 4);
+    listen(serverFd, 10);
 
     return serverFd;
 }

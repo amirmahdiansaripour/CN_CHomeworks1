@@ -2,12 +2,10 @@
 
 using namespace std;
 
-#include <sys/socket.h>
-#include <iostream>
-#include <string>
-#include <arpa/inet.h>
-#include <sys/time.h>
-#include <netinet/in.h>
+void error(const char *msg){
+    perror(msg);
+    exit(0);
+}
 
 Client::Client(){
 
@@ -30,22 +28,22 @@ void Client::run()
 
 int Client::connectServer(int port) 
 {
-    int fd;
+    int socket_fd;
     struct sockaddr_in serverAddress;
 
-    fd = socket(AF_INET, SOCK_STREAM, 0);
+    socket_fd = socket(AF_INET, SOCK_STREAM, 0);
 
+    if (socket_fd < 0) 
+        error("ERROR : could not make a socket\n");
     serverAddress.sin_family = AF_INET;
     serverAddress.sin_port = htons(port);
     serverAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
 
-    if(connect(fd, (struct sockaddr *)& serverAddress, sizeof(serverAddress)) < 0)
-    {
-        cout << "Error in connecting to server\n";
-        return -1;
+    if(connect(socket_fd, (struct sockaddr *)& serverAddress, sizeof(serverAddress)) < 0){
+        error("ERROR : could not connect\n");
     }
     
     cout << "Connected to server at port " << port << "\n";
-    return fd;
+    return socket_fd;
 
 }

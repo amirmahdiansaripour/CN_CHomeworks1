@@ -11,13 +11,6 @@ User::User(string username_, string password_,
     isAdmin = admin;
 }
 
-User::User(User& u){
-    username = u.username;
-    password = u.password;
-    maxDownloadSize = u.maxDownloadSize;
-    isAdmin = u.isAdmin;
-}
-
 void User::printUserData(){
     cout << "username: " << username << "\n";
     cout << "password: " << password << "\n";

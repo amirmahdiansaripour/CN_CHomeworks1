@@ -25,6 +25,14 @@ string Response::getResponseMessage(int responseCode)
 			sendToClient = (to_string(responseCode) + ": User logged in, proceed. Logged out if appropriate.");
 			break;
 
+		case(HELP_CODE):
+			sendToClient = (to_string(responseCode) + "\n" + helpResponse);
+			break;
+		
+		case(QUIT_CODE):
+			sendToClient = (to_string(responseCode) + ": Successful Quit.");
+			break;
+
 		default:
 			sendToClient = "Error";
 	}

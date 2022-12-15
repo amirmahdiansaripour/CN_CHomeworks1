@@ -21,6 +21,11 @@ vector<string> parseMessage(string message) {
 
 MessageHandler::MessageHandler(vector<User*> users){
     usersFromServer = users;
+    userEntered = false;
+    passEntered = false;
+    incompleteUser = NULL;
+    currentUser = NULL;
+
 }
 
 string MessageHandler::handle(string message){
@@ -40,6 +45,13 @@ string MessageHandler::handle(string message){
             string password = parsedMessage[1];
             return response.getResponseMessage(loginPassword(password));
         }
+        else if(command == HELP){
+            return response.getResponseMessage(HELP_CODE);
+        }
+        else if(command == QUIT){
+            int quitRes = clientQuit();
+            return response.getResponseMessage(quitRes);
+        }
     }
     catch (exception e) {
 
@@ -53,6 +65,8 @@ int MessageHandler::loginUsername(string username)
     for(User* u: usersFromServer) 
     {
         if(u->identicalUsername(username)) {
+            incompleteUser = u;
+            userEntered = true;
             return USERNAME_FOUND;
         }
     }
@@ -61,15 +75,15 @@ int MessageHandler::loginUsername(string username)
 
 int MessageHandler::loginPassword(string password) 
 {
-    if(!incompleteLogin) {
+    if(!userEntered) {  // Bad sequence
         return PASS_WITHOUT_USER;
     }
     
-    else if(incompleteLoginUser->isCorrectPassword(password)) {
-        incompleteLogin = false;
-        loggedIn = true;
-        currentUser = incompleteLoginUser;
-        incompleteLoginUser = nullptr;
+    else if(incompleteUser->isCorrectPassword(password)) {
+        userEntered = false;
+        passEntered = true;
+        currentUser = incompleteUser;
+        incompleteUser = NULL;
         return SUCCESSFUL_LOGIN;
     }
     else {
@@ -77,3 +91,10 @@ int MessageHandler::loginPassword(string password)
     }
 
 }
+
+int MessageHandler::clientQuit(){
+    
+
+    return QUIT_CODE;
+}
+

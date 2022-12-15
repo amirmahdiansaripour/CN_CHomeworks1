@@ -16,14 +16,14 @@ public:
     ConfigReader(const std::string path);
     ConfigReader();
     std::vector<std::string> getFilesNames();
-    std::vector<User> getUsers();
+    std::vector<User*> getUsers();
     void readConfigFile();
     void printData();
     // void addUser(auto record);
 private:
     std::string path;
     std::vector<std::string> fileNames;
-    std::vector<User> users;
+    std::vector<User*> users;
 };
 
 

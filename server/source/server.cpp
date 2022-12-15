@@ -3,6 +3,8 @@
 
 using namespace std;
 
+vector<User*> usersTosend;
+
 Server::Server(const string path){
     configReader = ConfigReader(path);
     fileNames = configReader.getFilesNames();
@@ -17,55 +19,52 @@ void error(const char *msg){
 
 struct threadArg{
     int threadID;
-    int commandID;
-    int dataID;
+    int client;
 };
+
 typedef struct threadArg threadArg;
 
-void* handleConnection(int commandID, int dataID){
-    // threadArg *arg = (threadArg *) threadArgs;
-    MessageHandler* messageHandler = new MessageHandler(dataID);
-    char read_buffer[1024];
-    string send_buffer;
+void* handleConnection(void* thread){
+    threadArg *arg = (threadArg *) thread;
+    MessageHandler* messageHandler = new MessageHandler(usersTosend);
+    // cout << messageHandler->usersFromServer.size() << "gg\n";
+    char readClient[1024];
+    string sendClient;
     while(true){
-        memset(read_buffer, 0, 1024);
-        bzero(read_buffer, 1024);
-        if(recv(commandID, read_buffer, sizeof(read_buffer), 0) > 0){
-            cout << "Client: " << string(read_buffer) << "\n";
-            send_buffer = messageHandler->handle(string(read_buffer));
-            cout << "Server: " << send_buffer << "\n";
-            pthread_exit(NULL);
+        memset(readClient, 0, 1024);
+        bzero(readClient, 1024);
+        if(recv(arg->client, readClient, sizeof(readClient), 0) > 0){
+            cout << "Client: " << string(readClient) << "\n";
+            sendClient = messageHandler->handle(string(readClient));
+            cout << "Server: " << sendClient << "\n";
         }
-        pthread_exit(NULL);
     }
 
 }
 
 void Server::run(){
-    int dataFd = setupServer(8082);
-    int commandFd = setupServer(8083);
-    pthread_t threads[1024];
+
+    int serverFd = setupServer(8083);
+    pthread_t threads[MAX_CLIENTS];  
     int numOfThreads = 0;
     while (true){
-        int newCommand = acceptClient(commandFd);
-        int newData = acceptClient(dataFd);
-        if(newCommand == -1 || newData == -1)
+        int clientFd = acceptClient(serverFd);
+        if(clientFd == -1)
             error("ERROR: could not accept client\n");
         
         threadArg arg;
-        arg.commandID = newCommand;
-        arg.dataID = newData;
+        arg.client = clientFd;
         arg.threadID = numOfThreads;
-        handleConnection(arg.commandID, arg.dataID);
-        // int result = pthread_create(&threads[numOfThreads], NULL, &handleConnection, (void*)& arg);
-        // if(result){
-        //     error(("ERROR: could not create thread " + to_string(numOfThreads) + "\n").c_str());
-        // }
+        usersTosend = users;
+        int result = pthread_create(&threads[numOfThreads], NULL, &handleConnection, (void*)& arg);
+        if(result){
+            error(("ERROR: could not create thread " + to_string(numOfThreads) + "\n").c_str());
+        }
         numOfThreads++;
     }
-    // for(int i = 0; i < numOfThreads; i++){
-    //     pthread_join(threads[i], NULL);
-    // }
+    for(int i = 0; i < numOfThreads; i++){
+        pthread_join(threads[i], NULL);
+    }
     
 }
 

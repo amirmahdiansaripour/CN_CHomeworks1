@@ -15,7 +15,6 @@ void Client::run()
 {
     string command;    
     
-    int dataFd = connectServer(8082);
     int commandFd = connectServer(8083);
 
     while(true) 

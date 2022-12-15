@@ -2,23 +2,31 @@
 
 using namespace std;
 
+Response::Response(){}
+
 string Response::getResponseMessage(int responseCode) 
 {
-	string res = "Error";
-	// cout << "code : " << responseCode << "\n";
+	string sendToClient;
 	switch(responseCode)
 	{
 		case(USERNAME_FOUND):
-			res = (to_string(responseCode) + ": User name okay, need password");
+			sendToClient = (to_string(responseCode) + ": User name okay, need password");
+			break;
 
 		case(INVALID_USER_PASS):
-			res =  (to_string(responseCode) + ": Invalid username or password");
+			sendToClient =  (to_string(responseCode) + ": Invalid username or password");
+			break;
 
 		case(PASS_WITHOUT_USER):
-			res = (to_string(responseCode) + ": Bad sequence of commands");
-		
+			sendToClient = (to_string(responseCode) + ": Bad sequence of commands");
+			break;
+
 		case(SUCCESSFUL_LOGIN):
-			res = (to_string(responseCode) + ": User logged in, proceed. Logged out if appropriate.");
+			sendToClient = (to_string(responseCode) + ": User logged in, proceed. Logged out if appropriate.");
+			break;
+
+		default:
+			sendToClient = "Error";
 	}
-	return res;
+	return sendToClient;
 }

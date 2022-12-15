@@ -10,13 +10,13 @@
 
 class MessageHandler{
 public:
-    MessageHandler(int id_);
-    std::string handle(std::string message);
-private:
+    MessageHandler(std::vector<User*>);
+    std::string handle(std::string);
+
     int id;
-    int loginUsername(std::string username);
-    int loginPassword(std::string password);
-    std::vector<User> users;
+    int loginUsername(std::string);
+    int loginPassword(std::string);
+    std::vector<User*> usersFromServer;
     User* incompleteLoginUser;
     bool loggedIn;
     bool incompleteLogin;

@@ -19,8 +19,8 @@ vector<string> parseMessage(string message) {
     return parsedMessage;
 }
 
-MessageHandler::MessageHandler(int id_){
-    id = id_;
+MessageHandler::MessageHandler(vector<User*> users){
+    usersFromServer = users;
 }
 
 string MessageHandler::handle(string message){
@@ -32,9 +32,8 @@ string MessageHandler::handle(string message){
         if (command == USER_SIGNIN)
         {
             string username = parsedMessage[1];
-            string res = string(response.getResponseMessage(loginUsername(username)));
-            // cout << "res : " << res << "\n";
-            return res;
+            string sendToClient = string(response.getResponseMessage(loginUsername(username)));
+            return sendToClient;
         }
         else if (command == PASS_SIGNIN) 
         {
@@ -51,9 +50,9 @@ string MessageHandler::handle(string message){
 
 int MessageHandler::loginUsername(string username) 
 {
-    for(User u: users) 
+    for(User* u: usersFromServer) 
     {
-        if(u.identicalUsername(username)) {
+        if(u->identicalUsername(username)) {
             return USERNAME_FOUND;
         }
     }

@@ -12,6 +12,7 @@ const int DEFAULT_ERROR = 500;
 
 class Response {
 public:
+	Response();
 	std::string getResponseMessage(int responseCode);
 
 };

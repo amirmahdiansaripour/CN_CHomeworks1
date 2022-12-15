@@ -14,6 +14,8 @@
 #include <netinet/in.h>
 #include <unistd.h>
 
+#define MAX_CLIENTS 10
+
 class Server{
 public:
     Server(const std::string);
@@ -21,9 +23,9 @@ public:
 private:
     ConfigReader configReader;
     std::vector<std::string> fileNames;
-    std::vector<User> users;
-    int setupServer(int port);
-    int acceptClient(int serverFd);
+    std::vector<User*> users;
+    int setupServer(int);
+    int acceptClient(int);
 };
 
 #endif

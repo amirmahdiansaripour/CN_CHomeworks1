@@ -11,8 +11,8 @@ ConfigReader::ConfigReader(){
 }
 
 void ConfigReader::printData(){
-    for(User user : users){
-        user.printUserData();
+    for(User* user : users){
+        user->printUserData();
     }
     for(string fileName : fileNames){
         cout << fileName << "\n";
@@ -31,7 +31,7 @@ void ConfigReader::readConfigFile(){
         if(admin == "true")
             isAdmin = true;
         int size = stoi(record["size"].get<string>());
-        User newUser = User(username, password, size, isAdmin);
+        User* newUser = new User(username, password, size, isAdmin);
         users.push_back(newUser);
     }
 
@@ -42,7 +42,7 @@ void ConfigReader::readConfigFile(){
 
 }
 
-vector<User> ConfigReader::getUsers(){
+vector<User*> ConfigReader::getUsers(){
     return users;
 }
 

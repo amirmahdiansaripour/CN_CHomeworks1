@@ -6,6 +6,7 @@
 class User{
 public:
     User(std::string, std::string, int, bool);
+    User(User&);
     void printUserData();
     bool identicalUsername(std::string username_);
     bool isCorrectPassword(std::string inputPassword);

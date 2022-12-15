@@ -19,9 +19,8 @@ vector<string> parseMessage(string message) {
     return parsedMessage;
 }
 
-MessageHandler::MessageHandler(int id_, vector<User> _users){
+MessageHandler::MessageHandler(int id_){
     id = id_;
-    users = _users;
 }
 
 string MessageHandler::handle(string message){

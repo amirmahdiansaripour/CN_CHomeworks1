@@ -1,7 +1,7 @@
 BUILD_DIR = build
 SRC_DIR = source
 HEADER_DIR = header
-CFLAGS = g++ -std=c++11 -I$(HEADER_DIR)
+CFLAGS = g++ -std=c++11 -I$(HEADER_DIR) -pthread
 
 OBJECTS = \
 	$(BUILD_DIR)/Server.o			\

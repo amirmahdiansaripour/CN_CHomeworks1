@@ -16,10 +16,8 @@
 
 class Server{
 public:
-    Server(const std::string configPath);
+    Server(const std::string);
     void run();
-    void* handleConnection(void* command, void* command_id);
-
 private:
     ConfigReader configReader;
     std::vector<std::string> fileNames;

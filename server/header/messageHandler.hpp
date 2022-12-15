@@ -9,7 +9,7 @@ const std::string PASS_SIGNIN = "pass";
 
 class MessageHandler{
 public:
-    MessageHandler(int id_, std::vector<User> _users);
+    MessageHandler(int id_);
     std::string handle(std::string message);
 private:
     int id;

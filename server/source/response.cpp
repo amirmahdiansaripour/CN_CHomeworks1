@@ -1,20 +1,24 @@
 #include "../header/response.hpp"
 
+using namespace std;
 
-std::string Response::getResponseMessage(int responseCode) 
+string Response::getResponseMessage(int responseCode) 
 {
+	string res = "Error";
+	// cout << "code : " << responseCode << "\n";
 	switch(responseCode)
 	{
 		case(USERNAME_FOUND):
-			return responseCode + ": User name okay, need password";
+			res = (to_string(responseCode) + ": User name okay, need password");
 
 		case(INVALID_USER_PASS):
-			return responseCode + ": Invalid username or password";
+			res =  (to_string(responseCode) + ": Invalid username or password");
 
 		case(PASS_WITHOUT_USER):
-			return responseCode + ": Bad sequence of commands";
+			res = (to_string(responseCode) + ": Bad sequence of commands");
 		
 		case(SUCCESSFUL_LOGIN):
-			return responseCode + ": User logged in, proceed. Logged out if appropriate.";
+			res = (to_string(responseCode) + ": User logged in, proceed. Logged out if appropriate.");
 	}
+	return res;
 }

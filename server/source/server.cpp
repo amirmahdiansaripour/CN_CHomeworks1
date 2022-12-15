@@ -22,16 +22,18 @@ struct threadArg{
 };
 typedef struct threadArg threadArg;
 
-void* handleConnection(void* threadArgs){
-    threadArg *arg = (threadArg *) threadArgs;
-    MessageHandler* messageHandler = new MessageHandler(arg->dataID);
+void* handleConnection(int commandID, int dataID){
+    // threadArg *arg = (threadArg *) threadArgs;
+    MessageHandler* messageHandler = new MessageHandler(dataID);
     char read_buffer[1024];
     string send_buffer;
     while(true){
         memset(read_buffer, 0, 1024);
         bzero(read_buffer, 1024);
-        if(recv(arg->commandID, read_buffer, sizeof(read_buffer), 0) > 0){
-            cout << "Message from client: " << string(read_buffer) << "\n";
+        if(recv(commandID, read_buffer, sizeof(read_buffer), 0) > 0){
+            cout << "Client: " << string(read_buffer) << "\n";
+            send_buffer = messageHandler->handle(string(read_buffer));
+            cout << "Server: " << send_buffer << "\n";
             pthread_exit(NULL);
         }
         pthread_exit(NULL);
@@ -40,8 +42,8 @@ void* handleConnection(void* threadArgs){
 }
 
 void Server::run(){
-    int dataFd = setupServer(8080);
-    int commandFd = setupServer(8081);
+    int dataFd = setupServer(8082);
+    int commandFd = setupServer(8083);
     pthread_t threads[1024];
     int numOfThreads = 0;
     while (true){
@@ -54,15 +56,16 @@ void Server::run(){
         arg.commandID = newCommand;
         arg.dataID = newData;
         arg.threadID = numOfThreads;
-        int result = pthread_create(&threads[numOfThreads], NULL, &handleConnection, (void*)& arg);
-        if(result){
-            error(("ERROR: could not create thread " + to_string(numOfThreads) + "\n").c_str());
-        }
+        handleConnection(arg.commandID, arg.dataID);
+        // int result = pthread_create(&threads[numOfThreads], NULL, &handleConnection, (void*)& arg);
+        // if(result){
+        //     error(("ERROR: could not create thread " + to_string(numOfThreads) + "\n").c_str());
+        // }
         numOfThreads++;
     }
-    for(int i = 0; i < numOfThreads; i++){
-        pthread_join(threads[i], NULL);
-    }
+    // for(int i = 0; i < numOfThreads; i++){
+    //     pthread_join(threads[i], NULL);
+    // }
     
 }
 

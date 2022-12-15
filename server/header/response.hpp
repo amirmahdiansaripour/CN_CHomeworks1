@@ -1,6 +1,7 @@
 #ifndef RESPONSE_H
 #define RESPONSE_H
 #include <string>
+#include <iostream>
 const int USERNAME_FOUND = 331;
 const int INVALID_USER_PASS = 430;
 const int PASS_WITHOUT_USER = 503;

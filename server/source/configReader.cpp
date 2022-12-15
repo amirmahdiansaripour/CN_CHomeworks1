@@ -10,19 +10,6 @@ ConfigReader::ConfigReader(const string path_){
 ConfigReader::ConfigReader(){
 }
 
-// void ConfigReader::addUser(auto record){
-//     string username = record["user"].get<string>();
-//     string password = record["password"].get<string>();
-//     bool isAdmin = false;
-//     string admin = record["admin"].get<string>(); 
-//     if(admin == "true")
-//         isAdmin = true;
-//     int size = stoi(record["size"].get<string>());
-//     User newUser = User(username, password, size, isAdmin);
-//     newUser.printUserData();
-//     users.push_back(newUser);
-// }
-
 void ConfigReader::printData(){
     for(User user : users){
         user.printUserData();

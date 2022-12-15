@@ -32,7 +32,9 @@ string MessageHandler::handle(string message){
         if (command == USER_SIGNIN)
         {
             string username = parsedMessage[1];
-            return response.getResponseMessage(loginUsername(username));
+            string res = string(response.getResponseMessage(loginUsername(username)));
+            // cout << "res : " << res << "\n";
+            return res;
         }
         else if (command == PASS_SIGNIN) 
         {

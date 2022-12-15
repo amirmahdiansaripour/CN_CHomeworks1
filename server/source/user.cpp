@@ -3,7 +3,7 @@
 
 using namespace std;
 
-User::User(const string username_, const string password_, 
+User::User(string username_, string password_, 
             int size, bool admin){
     username = username_;
     password = password_;

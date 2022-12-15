@@ -4,8 +4,9 @@
 #include "../header/user.hpp"
 #include <string>
 #include <vector>
-const std::string USER_SIGNIN = "user";
-const std::string PASS_SIGNIN = "pass";
+
+#define USER_SIGNIN "user"
+#define PASS_SIGNIN "pass"
 
 class MessageHandler{
 public:

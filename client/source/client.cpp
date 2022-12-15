@@ -13,14 +13,16 @@ Client::Client(){
 
 void Client::run()
 {
-    string command;    
+    string request;    
     
-    int commandFd = connectServer(8083);
-
+    int serverFd = connectServer(8083);
+    char readFromServer[1024];
     while(true) 
     {
-        getline(cin, command);
-        send(commandFd, command.c_str(), command.size(), 0);
+        getline(cin, request);
+        send(serverFd, request.c_str(), request.size(), 0);
+        recv(serverFd, readFromServer, sizeof(readFromServer), 0);
+        cout << readFromServer << "\n";
     }
 
 }

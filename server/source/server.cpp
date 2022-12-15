@@ -34,9 +34,9 @@ void* handleConnection(void* thread){
         memset(readClient, 0, 1024);
         bzero(readClient, 1024);
         if(recv(arg->client, readClient, sizeof(readClient), 0) > 0){
-            cout << "Client: " << string(readClient) << "\n";
+            cout << string(readClient) << "\n";
             sendClient = messageHandler->handle(string(readClient));
-            cout << "Server: " << sendClient << "\n";
+            send(arg->client, sendClient.c_str(), sizeof(sendClient), 0);    
         }
     }
 

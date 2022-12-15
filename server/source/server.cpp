@@ -47,6 +47,7 @@ void Server::run(){
     int serverFd = setupServer(8083);
     pthread_t threads[MAX_CLIENTS];  
     int numOfThreads = 0;
+    usersTosend = users;
     while (true){
         int clientFd = acceptClient(serverFd);
         if(clientFd == -1)
@@ -55,7 +56,6 @@ void Server::run(){
         threadArg arg;
         arg.client = clientFd;
         arg.threadID = numOfThreads;
-        usersTosend = users;
         int result = pthread_create(&threads[numOfThreads], NULL, &handleConnection, (void*)& arg);
         if(result){
             error(("ERROR: could not create thread " + to_string(numOfThreads) + "\n").c_str());

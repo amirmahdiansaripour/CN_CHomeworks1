@@ -7,10 +7,9 @@
 #include <exception>
 using namespace std;
 
-string downloadedFileContent;
-
-string runCommandOnTerminal(string commandShell, vector<string> args);
-vector<string> parseMessage(string message);
+void runCommandOnTerminal(string , string, string);
+vector<string> parseMessage(string);
+string getCurrentDir();
 
 vector<string> parseMessage(string message) {
     stringstream sstream(message);
@@ -29,8 +28,27 @@ MessageHandler::MessageHandler(vector<User*> users){
     passEntered = false;
     incompleteUser = NULL;
     currentUser = NULL;
-    currentDirectory = runCommandOnTerminal("pwd", vector<string>{});
+    currentDirectory = getCurrentDir();
     // cout << "currentDirectory: " << currentDirectory;
+}
+
+
+string getCurrentDir(){
+    char tmpFile[L_tmpnam];
+    tmpnam(tmpFile);
+    runCommandOnTerminal("pwd", "", tmpFile);
+    ifstream myfile;
+    myfile.open(tmpFile);
+    string fileContent;
+    while(!myfile.eof()){
+        fileContent += myfile.get();
+    }
+    myfile.close();
+
+    fileContent.pop_back();
+    fileContent.pop_back();
+    // cout << "fileContent: " << fileContent << "\n";
+    return fileContent;
 }
 
 string MessageHandler::handle(string message){
@@ -110,38 +128,31 @@ int MessageHandler::clientQuit(){
     return QUIT_CODE;
 }
 
+string getLastPartOfPath(string str){
+    size_t found;
+    found = str.find_last_of('/');
+    if(found == string::npos) return str;
+    else{
+        string result = str.substr(found + 1); 
+        // cout<< result << "\n";
+        return result;
+    }
+}
+
 int MessageHandler::handleDownload(string fileName){
-
-    vector<string> terminalArg;
-    terminalArg.push_back(fileName);
-    runCommandOnTerminal("cd " + currentDirectory + " && cat ", terminalArg);
-
+    string res = getLastPartOfPath(fileName);
+    string downloadPath = (DOWNLOAD_FOLDER + res);
+    runCommandOnTerminal("cd " + currentDirectory + " && cat ", fileName, downloadPath);
     return DOWNLOAD_CODE;
 }
 
-string runCommandOnTerminal(string commandShell, vector<string> args){
-    char fileName[L_tmpnam];
-    tmpnam(fileName);
-    for(string argument : args)
-        commandShell += (" " + argument);
+void runCommandOnTerminal(string commandShell, string fileToUpload, string fileToWrite){
+
+    commandShell += (" " + fileToUpload);
 
     commandShell += " >> ";
 
-    commandShell += fileName;
+    commandShell += fileToWrite;
+
     system(commandShell.c_str());
-    ifstream file(fileName);
-    string fileContent;
-    if(!file){
-        perror("ERROR : could not open the file.\n");
-        exit(0);
-    }
-    else{
-        while(!file.eof()){
-            fileContent += file.get();
-        }
-        file.close();
-    }
-    fileContent.pop_back();
-    fileContent.pop_back();
-    return fileContent;
 }

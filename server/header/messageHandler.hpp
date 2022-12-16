@@ -10,6 +10,7 @@
 #define HELP            "help"
 #define QUIT            "quit"
 #define DOWNLOAD        "retr"
+#define DOWNLOAD_FOLDER " ../client/clientDownloads/"
 
 class MessageHandler{
 public:

@@ -11,6 +11,8 @@ void runCommandOnTerminal(string , string, string);
 vector<string> parseMessage(string);
 string getCurrentDir();
 
+string downloadedFileContent;
+
 vector<string> parseMessage(string message) {
     stringstream sstream(message);
     vector<string> parsedMessage;
@@ -29,17 +31,19 @@ MessageHandler::MessageHandler(vector<User*> users){
     incompleteUser = NULL;
     currentUser = NULL;
     currentDirectory = getCurrentDir();
-    // cout << "currentDirectory: " << currentDirectory;
 }
 
 
-string getCurrentDir(){
-    char tmpFile[L_tmpnam];
-    tmpnam(tmpFile);
-    runCommandOnTerminal("pwd", "", tmpFile);
+string getFileContent(string address){
     ifstream myfile;
-    myfile.open(tmpFile);
+    myfile.open(address);
     string fileContent;
+
+    if(!myfile.is_open()){
+        perror("ERROR: could not open file!\n");
+        exit(0);
+    }
+
     while(!myfile.eof()){
         fileContent += myfile.get();
     }
@@ -51,12 +55,19 @@ string getCurrentDir(){
     return fileContent;
 }
 
+string getCurrentDir(){
+    char tmpFile[L_tmpnam];
+    tmpnam(tmpFile);
+    runCommandOnTerminal("pwd", "", tmpFile);
+    string result = getFileContent(tmpFile);
+    return result;
+}
+
 string MessageHandler::handle(string message){
 
     vector<string> parsedMessage = parseMessage(message);
     string command = parsedMessage[0];
     Response response;
-    // cout << "comm: " << command << "\n";
     try {
         if (command == USER_SIGNIN)
         {
@@ -79,7 +90,7 @@ string MessageHandler::handle(string message){
         else if(command == DOWNLOAD){
             string fileName_ = parsedMessage[1];
             int downloadRes = handleDownload(fileName_);
-            return response.getResponseMessage(downloadRes);
+            return (downloadedFileContent + response.getResponseMessage(downloadRes));
         }
     }
     catch (exception e) {
@@ -140,9 +151,11 @@ string getLastPartOfPath(string str){
 }
 
 int MessageHandler::handleDownload(string fileName){
-    string res = getLastPartOfPath(fileName);
+    string res = getLastPartOfPath(fileName);   // ../server/test.txt => test.txt
+
     string downloadPath = (DOWNLOAD_FOLDER + res);
     runCommandOnTerminal("cd " + currentDirectory + " && cat ", fileName, downloadPath);
+    downloadedFileContent = (getFileContent(fileName) + "\n");
     return DOWNLOAD_CODE;
 }
 

@@ -11,6 +11,8 @@
 #define QUIT            "quit"
 #define DOWNLOAD        "retr"
 #define DOWNLOAD_FOLDER " ../client/clientDownloads/"
+#define UPLOAD_FOLDER " ../Files/"
+
 
 class MessageHandler{
 public:

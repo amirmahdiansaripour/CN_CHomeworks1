@@ -1,5 +1,5 @@
-#ifndef RESPONSE_H
-#define RESPONSE_H
+#ifndef	__RESPONSE_H__
+#define __RESPONSE_H__
 #include <string>
 #include <iostream>
 
@@ -27,4 +27,4 @@ public:
 	std::string getResponseMessage(int responseCode);
 
 };
-#endif // !RESPONSE_H
+#endif // !__RESPONSE_H__

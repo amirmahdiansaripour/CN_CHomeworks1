@@ -1,5 +1,6 @@
 #include "../header/messageHandler.hpp"
 #include "../header/response.hpp"
+#include "../header/eventLogger.hpp"
 #include <vector>
 #include <sstream>
 #include <fstream>
@@ -95,6 +96,8 @@ int MessageHandler::loginPassword(string password)
         passEntered = true;
         currentUser = incompleteUser;
         incompleteUser = NULL;
+        
+        EventLogger::logUserLogin(currentUser);
         return SUCCESSFUL_LOGIN;
     }
     else {
@@ -106,6 +109,7 @@ int MessageHandler::loginPassword(string password)
 int MessageHandler::clientQuit(){
     
     passEntered = false;
+    EventLogger::logUserLogout(currentUser);
     currentUser = NULL;
     return QUIT_CODE;
 }
@@ -115,7 +119,7 @@ int MessageHandler::handleDownload(string fileName){
     vector<string> terminalArg;
     terminalArg.push_back(fileName);
     runCommandOnTerminal("cd " + currentDirectory + " && cat ", terminalArg);
-
+    EventLogger::logDownload(currentUser, fileName);
     return DOWNLOAD_CODE;
 }
 

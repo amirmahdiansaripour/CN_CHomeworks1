@@ -1,5 +1,5 @@
-#ifndef USER_H
-#define USER_H
+#ifndef __USER_H__
+#define __USER_H__
 
 #include <string>
 
@@ -8,6 +8,7 @@ public:
     User(std::string, std::string, int, bool);
     void printUserData();
     bool identicalUsername(std::string username_);
+    std::string getUsername();
     bool isCorrectPassword(std::string inputPassword);
 private:
     std::string username;

@@ -26,3 +26,8 @@ bool User::identicalUsername(string username_) {
 bool User::isCorrectPassword(string inputPassword) {
     return inputPassword == password;
 }
+
+std::string User::getUsername()
+{
+    return username;
+}

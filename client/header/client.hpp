@@ -1,5 +1,5 @@
-#ifndef CLIENT_H
-#define CLIENT_H
+#ifndef __CLIENT_H__
+#define __CLIENT_H__
 
 #include <sys/socket.h>
 #include <iostream>

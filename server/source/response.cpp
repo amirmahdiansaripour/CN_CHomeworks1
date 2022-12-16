@@ -34,7 +34,7 @@ string Response::getResponseMessage(int responseCode)
 			sendToClient = (code + ": Successful Quit.");
 			break;
 
-		case(DOWNLOAD_CODE):
+		case(DOWNLOAD_CODE):	// TAs should change upload code
 			sendToClient = (code + ": Successful Download.");
 			break;
 

@@ -7,11 +7,8 @@
 #include <exception>
 using namespace std;
 
-void runCommandOnTerminal(string , string, string);
-vector<string> parseMessage(string);
-string getCurrentDir();
-
 string downloadedFileContent;
+string uploadedFileContent;
 
 vector<string> parseMessage(string message) {
     stringstream sstream(message);
@@ -24,15 +21,16 @@ vector<string> parseMessage(string message) {
     return parsedMessage;
 }
 
-MessageHandler::MessageHandler(vector<User*> users){
-    usersFromServer = users;
-    userEntered = false;
-    passEntered = false;
-    incompleteUser = NULL;
-    currentUser = NULL;
-    currentDirectory = getCurrentDir();
-}
+void runCommandOnTerminal(string commandShell, string fileToUpload, string fileToWrite){
 
+    commandShell += (" " + fileToUpload);
+
+    commandShell += " >> ";
+
+    commandShell += fileToWrite;
+
+    system(commandShell.c_str());
+}
 
 string getFileContent(string address){
     ifstream myfile;
@@ -61,6 +59,15 @@ string getCurrentDir(){
     runCommandOnTerminal("pwd", "", tmpFile);
     string result = getFileContent(tmpFile);
     return result;
+}
+
+MessageHandler::MessageHandler(vector<User*> users){
+    usersFromServer = users;
+    userEntered = false;
+    passEntered = false;
+    incompleteUser = NULL;
+    currentUser = NULL;
+    currentDirectory = getCurrentDir();
 }
 
 string MessageHandler::handle(string message){
@@ -92,6 +99,13 @@ string MessageHandler::handle(string message){
             int downloadRes = handleDownload(fileName_);
             return (downloadedFileContent + response.getResponseMessage(downloadRes));
         }
+
+        else if(command == UPLOAD){
+            string fileName_ = parsedMessage[1];
+            int upLoadRes = handleUpload(fileName_);
+            return (uploadedFileContent + response.getResponseMessage(upLoadRes));
+        }
+
     }
     catch (exception e) {
 
@@ -159,13 +173,12 @@ int MessageHandler::handleDownload(string fileName){
     return DOWNLOAD_CODE;
 }
 
-void runCommandOnTerminal(string commandShell, string fileToUpload, string fileToWrite){
+// Some differences exist between upload and download, implemented later.
 
-    commandShell += (" " + fileToUpload);
-
-    commandShell += " >> ";
-
-    commandShell += fileToWrite;
-
-    system(commandShell.c_str());
+int MessageHandler::handleUpload(string fileName){
+    string res = getLastPartOfPath(fileName);
+    string uploadPath = (UPLOAD_FOLDER + res);
+    runCommandOnTerminal("cd " + currentDirectory + " && cat ", fileName, uploadPath);
+    uploadedFileContent = (getFileContent(fileName) + "\n");
+    return UPLOAD_CODE;
 }

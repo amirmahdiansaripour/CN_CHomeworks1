@@ -7,30 +7,35 @@ Response::Response(){}
 string Response::getResponseMessage(int responseCode) 
 {
 	string sendToClient;
+	string code = to_string(responseCode);
 	switch(responseCode)
 	{
 		case(USERNAME_FOUND):
-			sendToClient = (to_string(responseCode) + ": User name okay, need password");
+			sendToClient = (code + ": User name okay, need password");
 			break;
 
 		case(INVALID_USER_PASS):
-			sendToClient =  (to_string(responseCode) + ": Invalid username or password");
+			sendToClient =  (code + ": Invalid username or password");
 			break;
 
 		case(PASS_WITHOUT_USER):
-			sendToClient = (to_string(responseCode) + ": Bad sequence of commands");
+			sendToClient = (code + ": Bad sequence of commands");
 			break;
 
 		case(SUCCESSFUL_LOGIN):
-			sendToClient = (to_string(responseCode) + ": User logged in, proceed. Logged out if appropriate.");
+			sendToClient = (code + ": User logged in, proceed. Logged out if appropriate.");
 			break;
 
 		case(HELP_CODE):
-			sendToClient = (to_string(responseCode) + "\n" + helpResponse);
+			sendToClient = (code + "\n" + helpResponse);
 			break;
 		
 		case(QUIT_CODE):
-			sendToClient = (to_string(responseCode) + ": Successful Quit.");
+			sendToClient = (code + ": Successful Quit.");
+			break;
+
+		case(DOWNLOAD_CODE):
+			sendToClient = (code + ": Successful Download.");
 			break;
 
 		default:

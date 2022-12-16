@@ -9,6 +9,8 @@
 #define PASS_SIGNIN     "pass"
 #define HELP            "help"
 #define QUIT            "quit"
+#define DOWNLOAD        "retr"
+
 class MessageHandler{
 public:
     MessageHandler(std::vector<User*>);
@@ -16,6 +18,7 @@ public:
     int loginUsername(std::string);
     int loginPassword(std::string);
     int clientQuit();
+    int handleDownload(std::string);
 private:
     int id;
     std::vector<User*> usersFromServer;
@@ -23,6 +26,7 @@ private:
     User* currentUser;
     bool userEntered;
     bool passEntered;    
+    std::string currentDirectory;
 };
 
 #endif

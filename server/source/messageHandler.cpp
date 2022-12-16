@@ -2,10 +2,14 @@
 #include "../header/response.hpp"
 #include <vector>
 #include <sstream>
+#include <fstream>
 #include <iostream>
 #include <exception>
 using namespace std;
 
+string downloadedFileContent;
+
+string runCommandOnTerminal(string commandShell, vector<string> args);
 vector<string> parseMessage(string message);
 
 vector<string> parseMessage(string message) {
@@ -25,7 +29,8 @@ MessageHandler::MessageHandler(vector<User*> users){
     passEntered = false;
     incompleteUser = NULL;
     currentUser = NULL;
-
+    currentDirectory = runCommandOnTerminal("pwd", vector<string>{});
+    // cout << "currentDirectory: " << currentDirectory;
 }
 
 string MessageHandler::handle(string message){
@@ -33,6 +38,7 @@ string MessageHandler::handle(string message){
     vector<string> parsedMessage = parseMessage(message);
     string command = parsedMessage[0];
     Response response;
+    // cout << "comm: " << command << "\n";
     try {
         if (command == USER_SIGNIN)
         {
@@ -51,6 +57,11 @@ string MessageHandler::handle(string message){
         else if(command == QUIT){
             int quitRes = clientQuit();
             return response.getResponseMessage(quitRes);
+        }
+        else if(command == DOWNLOAD){
+            string fileName_ = parsedMessage[1];
+            int downloadRes = handleDownload(fileName_);
+            return response.getResponseMessage(downloadRes);
         }
     }
     catch (exception e) {
@@ -94,7 +105,43 @@ int MessageHandler::loginPassword(string password)
 
 int MessageHandler::clientQuit(){
     
-
+    passEntered = false;
+    currentUser = NULL;
     return QUIT_CODE;
 }
 
+int MessageHandler::handleDownload(string fileName){
+
+    vector<string> terminalArg;
+    terminalArg.push_back(fileName);
+    runCommandOnTerminal("cd " + currentDirectory + " && cat ", terminalArg);
+
+    return DOWNLOAD_CODE;
+}
+
+string runCommandOnTerminal(string commandShell, vector<string> args){
+    char fileName[L_tmpnam];
+    tmpnam(fileName);
+    for(string argument : args)
+        commandShell += (" " + argument);
+
+    commandShell += " >> ";
+
+    commandShell += fileName;
+    system(commandShell.c_str());
+    ifstream file(fileName);
+    string fileContent;
+    if(!file){
+        perror("ERROR : could not open the file.\n");
+        exit(0);
+    }
+    else{
+        while(!file.eof()){
+            fileContent += file.get();
+        }
+        file.close();
+    }
+    fileContent.pop_back();
+    fileContent.pop_back();
+    return fileContent;
+}

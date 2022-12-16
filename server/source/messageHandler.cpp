@@ -9,9 +9,7 @@
 using namespace std;
 
 string downloadedFileContent;
-
-string runCommandOnTerminal(string commandShell, vector<string> args);
-vector<string> parseMessage(string message);
+string uploadedFileContent;
 
 vector<string> parseMessage(string message) {
     stringstream sstream(message);
@@ -24,14 +22,53 @@ vector<string> parseMessage(string message) {
     return parsedMessage;
 }
 
+void runCommandOnTerminal(string commandShell, string fileToUpload, string fileToWrite){
+
+    commandShell += (" " + fileToUpload);
+
+    commandShell += " >> ";
+
+    commandShell += fileToWrite;
+
+    system(commandShell.c_str());
+}
+
+string getFileContent(string address){
+    ifstream myfile;
+    myfile.open(address);
+    string fileContent;
+
+    if(!myfile.is_open()){
+        perror("ERROR: could not open file!\n");
+        exit(0);
+    }
+
+    while(!myfile.eof()){
+        fileContent += myfile.get();
+    }
+    myfile.close();
+
+    fileContent.pop_back();
+    fileContent.pop_back();
+    // cout << "fileContent: " << fileContent << "\n";
+    return fileContent;
+}
+
+string getCurrentDir(){
+    char tmpFile[L_tmpnam];
+    tmpnam(tmpFile);
+    runCommandOnTerminal("pwd", "", tmpFile);
+    string result = getFileContent(tmpFile);
+    return result;
+}
+
 MessageHandler::MessageHandler(vector<User*> users){
     usersFromServer = users;
     userEntered = false;
     passEntered = false;
     incompleteUser = NULL;
     currentUser = NULL;
-    currentDirectory = runCommandOnTerminal("pwd", vector<string>{});
-    // cout << "currentDirectory: " << currentDirectory;
+    currentDirectory = getCurrentDir();
 }
 
 string MessageHandler::handle(string message){
@@ -39,7 +76,6 @@ string MessageHandler::handle(string message){
     vector<string> parsedMessage = parseMessage(message);
     string command = parsedMessage[0];
     Response response;
-    // cout << "comm: " << command << "\n";
     try {
         if (command == USER_SIGNIN)
         {
@@ -62,8 +98,15 @@ string MessageHandler::handle(string message){
         else if(command == DOWNLOAD){
             string fileName_ = parsedMessage[1];
             int downloadRes = handleDownload(fileName_);
-            return response.getResponseMessage(downloadRes);
+            return (downloadedFileContent + response.getResponseMessage(downloadRes));
         }
+
+        else if(command == UPLOAD){
+            string fileName_ = parsedMessage[1];
+            int upLoadRes = handleUpload(fileName_);
+            return (uploadedFileContent + response.getResponseMessage(upLoadRes));
+        }
+
     }
     catch (exception e) {
 
@@ -114,38 +157,34 @@ int MessageHandler::clientQuit(){
     return QUIT_CODE;
 }
 
-int MessageHandler::handleDownload(string fileName){
+string getLastPartOfPath(string str){
+    size_t found;
+    found = str.find_last_of('/');
+    if(found == string::npos) return str;
+    else{
+        string result = str.substr(found + 1); 
+        // cout<< result << "\n";
+        return result;
+    }
+}
 
-    vector<string> terminalArg;
-    terminalArg.push_back(fileName);
-    runCommandOnTerminal("cd " + currentDirectory + " && cat ", terminalArg);
+int MessageHandler::handleDownload(string fileName){
+    string res = getLastPartOfPath(fileName);   // ../server/test.txt => test.txt
+
+    string downloadPath = (DOWNLOAD_FOLDER + res);
+    runCommandOnTerminal("cd " + currentDirectory + " && cat ", fileName, downloadPath);
+    downloadedFileContent = (getFileContent(fileName) + "\n");
     EventLogger::logDownload(currentUser, fileName);
     return DOWNLOAD_CODE;
 }
 
-string runCommandOnTerminal(string commandShell, vector<string> args){
-    char fileName[L_tmpnam];
-    tmpnam(fileName);
-    for(string argument : args)
-        commandShell += (" " + argument);
+// Some differences exist between upload and download, implemented later.
 
-    commandShell += " >> ";
-
-    commandShell += fileName;
-    system(commandShell.c_str());
-    ifstream file(fileName);
-    string fileContent;
-    if(!file){
-        perror("ERROR : could not open the file.\n");
-        exit(0);
-    }
-    else{
-        while(!file.eof()){
-            fileContent += file.get();
-        }
-        file.close();
-    }
-    fileContent.pop_back();
-    fileContent.pop_back();
-    return fileContent;
+int MessageHandler::handleUpload(string fileName){
+    string res = getLastPartOfPath(fileName);
+    string uploadPath = (UPLOAD_FOLDER + res);
+    runCommandOnTerminal("cd " + currentDirectory + " && cat ", fileName, uploadPath);
+    uploadedFileContent = (getFileContent(fileName) + "\n");
+    EventLogger::logUpload(currentUser, fileName);
+    return UPLOAD_CODE;
 }

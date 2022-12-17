@@ -7,22 +7,35 @@ void error(const char *msg){
     exit(0);
 }
 
-Client::Client(){
+bool needDataChannel(string recieveFromServer){
+    if(recieveFromServer == "") return false;
+    // cout << "recieveFromServer: \n";
+    // cout << recieveFromServer;
+    size_t found = recieveFromServer.find("Successful Download.");
+    if(found != string::npos)   return true;
+    else return false;
+}
 
+Client::Client(){
 }
 
 void Client::run()
 {
     string request;    
     
-    int serverFd = connectServer(8083);
+    int commandChannel = connectServer(8081);
+    int dataChannel = connectServer(8084);
     char readFromServer[1024];
     while(true) 
     {
         getline(cin, request);
-        send(serverFd, request.c_str(), request.size(), 0);
-        recv(serverFd, readFromServer, sizeof(readFromServer), 0);
-        cout << readFromServer << "\n";
+        send(commandChannel, request.c_str(), request.size(), 0);
+        recv(commandChannel, readFromServer, sizeof(readFromServer), 0);
+        cout << "commandChannel: \n" << readFromServer << "\n";
+        if(needDataChannel(readFromServer)){
+            recv(dataChannel, readFromServer, sizeof(readFromServer), 0);
+            cout << "dataChannel: \n" << readFromServer << "\n";
+        }
     }
 
 }

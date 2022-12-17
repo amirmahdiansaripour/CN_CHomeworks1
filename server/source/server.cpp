@@ -19,8 +19,25 @@ void error(const char *msg){
 
 struct threadArg{
     int threadID;
-    int client;
+    int commandChannel;
+    int dataChannel;
 };
+
+bool needDataChannel(string sendToClient){
+    if(sendToClient == "") return false;
+    // cout << "sendToClient: \n";
+    // cout << sendToClient;
+    size_t found = sendToClient.find("Successful Download.");
+    if(found != string::npos)   return true;
+    else return false;
+}
+
+vector<string> splitCommandData(string mixedMessage){
+    size_t found = mixedMessage.find("226: Successful Download.");
+    string commandChannel = mixedMessage.substr(found);
+    string dataChannel = mixedMessage.substr(0, found - 1);
+    return {commandChannel, dataChannel};
+}
 
 typedef struct threadArg threadArg;
 
@@ -33,10 +50,27 @@ void* handleConnection(void* thread){
     while(true){
         memset(readClient, 0, 1024);
         bzero(readClient, 1024);
-        if(recv(arg->client, readClient, sizeof(readClient), 0) > 0){
+        bool dchanel;
+        if(recv(arg->commandChannel, readClient, sizeof(readClient), 0) > 0){
             cout << string(readClient) << "\n";
             sendClient = messageHandler->handle(string(readClient));
-            send(arg->client, sendClient.c_str(), sizeof(readClient), 0);    
+            // cout << "Res: " << sendClient;
+            dchanel = needDataChannel(sendClient);
+        }
+        else{
+            error("ERROR: could not receive from client\n");
+        }
+        if(!dchanel){   // no need for data channel
+            send(arg->commandChannel, sendClient.c_str(), sizeof(readClient), 0);
+        }
+        else{
+            vector<string> commandAndDataChannel = splitCommandData(sendClient);
+            // cout << "command:" << commandAndDataChannel[0] << "\n";
+            // cout << "data:" << commandAndDataChannel[1] << "\n";
+            string commandSend = commandAndDataChannel[0];
+            string dataSend = commandAndDataChannel[1];
+            send(arg->commandChannel, commandSend.c_str(), sizeof(readClient), 0);
+            send(arg->dataChannel, dataSend.c_str(), sizeof(readClient), 0);
         }
     }
 
@@ -44,17 +78,20 @@ void* handleConnection(void* thread){
 
 void Server::run(){
 
-    int serverFd = setupServer(8083);
+    int commandChannel = setupServer(8081);
+    int dataChannel = setupServer(8084);
     pthread_t threads[MAX_CLIENTS];  
     int numOfThreads = 0;
     usersTosend = users;
     while (true){
-        int clientFd = acceptClient(serverFd);
-        if(clientFd == -1)
+        int commandFd = acceptClient(commandChannel);
+        int dataFd = acceptClient(dataChannel);
+        if(commandFd == -1 || dataFd == -1)
             error("ERROR: could not accept client\n");
         
         threadArg arg;
-        arg.client = clientFd;
+        arg.commandChannel = commandFd;
+        arg.dataChannel = dataFd;
         arg.threadID = numOfThreads;
         int result = pthread_create(&threads[numOfThreads], NULL, &handleConnection, (void*)& arg);
         if(result){
@@ -65,7 +102,7 @@ void Server::run(){
     for(int i = 0; i < numOfThreads; i++){
         pthread_join(threads[i], NULL);
     }
-    
+    pthread_exit(NULL);
 }
 
 int Server::setupServer(int port) 

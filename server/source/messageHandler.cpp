@@ -96,12 +96,14 @@ string MessageHandler::handle(string message){
             return response.getResponseMessage(quitRes);
         }
         else if(command == DOWNLOAD){
+            downloadedFileContent = "";
             string fileName_ = parsedMessage[1];
             int downloadRes = handleDownload(fileName_);
             return (downloadedFileContent + response.getResponseMessage(downloadRes));
         }
 
         else if(command == UPLOAD){
+            uploadedFileContent = "";
             string fileName_ = parsedMessage[1];
             int upLoadRes = handleUpload(fileName_);
             return (uploadedFileContent + response.getResponseMessage(upLoadRes));
@@ -181,6 +183,9 @@ int MessageHandler::handleDownload(string fileName){
 // Some differences exist between upload and download, implemented later.
 
 int MessageHandler::handleUpload(string fileName){
+    if(currentUser->getAdmin() == false){
+        return FILE_UNAVAILABLE;
+    }
     string res = getLastPartOfPath(fileName);
     string uploadPath = (UPLOAD_FOLDER + res);
     runCommandOnTerminal("cd " + currentDirectory + " && cat ", fileName, uploadPath);

@@ -10,6 +10,7 @@ public:
     bool identicalUsername(std::string username_);
     std::string getUsername();
     bool isCorrectPassword(std::string inputPassword);
+    bool getAdmin();
 private:
     std::string username;
     std::string password;

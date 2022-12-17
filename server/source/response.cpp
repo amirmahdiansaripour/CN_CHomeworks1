@@ -38,6 +38,10 @@ string Response::getResponseMessage(int responseCode)
 			sendToClient = (code + ": Successful Download.");
 			break;
 
+		case(FILE_UNAVAILABLE):
+			sendToClient = (code + ": File unavailable.");
+			break;
+
 		default:
 			sendToClient = "Error";
 	}

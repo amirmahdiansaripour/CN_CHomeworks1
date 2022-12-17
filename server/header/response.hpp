@@ -13,6 +13,7 @@ const int HELP_CODE 		= 214;
 const int QUIT_CODE 		= 221;
 const int DOWNLOAD_CODE		= 226;
 const int UPLOAD_CODE		= 226;
+const int FILE_UNAVIALABLE	= 550;
 
 const std::string userHelp = "USER [name], Its argument is used to specify the user's string. It is used for user authentication.\n";
 const std::string passHelp = "PASS [password], Its argument is used to specify the user's string. It is used for user authorization.\n";

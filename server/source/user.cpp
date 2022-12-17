@@ -11,6 +11,8 @@ User::User(string username_, string password_,
     isAdmin = admin;
 }
 
+bool User::getAdmin(){return isAdmin;}
+
 void User::printUserData(){
     cout << "username: " << username << "\n";
     cout << "password: " << password << "\n";

@@ -38,6 +38,7 @@ private:
     User* incompleteUser;
     User* currentUser;
     bool userEntered;
+    bool loggedIn;
     bool passEntered;    
     std::string currentDirectory;
 };

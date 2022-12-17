@@ -14,13 +14,13 @@ string Response::getResponseMessage(int responseCode)
 			sendToClient = (code + ": User name okay, need password");
 			break;
 
-		case(INVALID_USER_PASS):
-			sendToClient =  (code + ": Invalid username or password");
-			break;
+		// case(INVALID_USER_PASS):
+		// 	sendToClient =  (code + ": Invalid username or password");
+		// 	break;
 
-		case(PASS_WITHOUT_USER):
-			sendToClient = (code + ": Bad sequence of commands");
-			break;
+		// case(PASS_WITHOUT_USER):
+		// 	sendToClient = (code + ": Bad sequence of commands");
+		// 	break;
 
 		case(SUCCESSFUL_LOGIN):
 			sendToClient = (code + ": User logged in, proceed. Logged out if appropriate.");
@@ -38,13 +38,13 @@ string Response::getResponseMessage(int responseCode)
 			sendToClient = (code + ": Successful Download.");
 			break;
 
-		case(FILE_UNAVAILABLE):
-			sendToClient = (code + ": File unavailable.");
-			break;
+		// case(FILE_UNAVAILABLE):
+		// 	sendToClient = (code + ": File unavailable.");
+		// 	break;
 
-		case(CAPACITY_LACKAGE):
-			sendToClient = (code + ": Can't open data connection.");
-			break;
+		// case(CAPACITY_LACKAGE):
+		// 	sendToClient = (code + ": Can't open data connection.");
+		// 	break;
 			
 		default:
 			sendToClient = "Error";

@@ -1,6 +1,15 @@
 #include "../header/messageHandler.hpp"
 #include "../header/response.hpp"
 #include "../header/eventLogger.hpp"
+
+#include "../header/exception/badSequenceError.hpp"
+#include "../header/exception/defaultError.hpp"
+#include "../header/exception/downloadCapacityError.hpp"
+#include "../header/exception/fileUnavailableError.hpp"
+#include "../header/exception/invalidUserPassError.hpp"
+#include "../header/exception/notLoggedInError.hpp"
+#include "../header/exception/syntaxError.hpp"
+
 using namespace std;
 
 string downloadedFileContent;
@@ -42,7 +51,6 @@ string getFileContent(string address){
 
     fileContent.pop_back();
     fileContent.pop_back();
-    // cout << "fileContent: " << fileContent << "\n";
     return fileContent;
 }
 
@@ -58,6 +66,7 @@ MessageHandler::MessageHandler(vector<User*> users, vector<string> adminFiles_){
     usersFromServer = users;
     userEntered = false;
     passEntered = false;
+    loggedIn = false;
     incompleteUser = NULL;
     currentUser = NULL;
     currentDirectory = getCurrentDir();
@@ -85,6 +94,7 @@ string MessageHandler::handle(string message){
             return response.getResponseMessage(HELP_CODE);
         }
         else if(command == QUIT){
+            
             int quitRes = clientQuit();
             return response.getResponseMessage(quitRes);
         }
@@ -102,10 +112,11 @@ string MessageHandler::handle(string message){
             return (uploadedFileContent + response.getResponseMessage(upLoadRes));
         }
 
-    }
-    catch (exception e) {
-
-    }
+    }   catch (exception* e) {
+            string ret = string(e->what());
+            delete e;
+            return ret;
+        }
     // response to each message is provided here.
     return NULL;
 }
@@ -120,33 +131,43 @@ int MessageHandler::loginUsername(string username)
             return USERNAME_FOUND;
         }
     }
-    return INVALID_USER_PASS;
+    exception* e = new InvalidUserPassError();
+    throw e;
 }
 
 int MessageHandler::loginPassword(string password) 
 {
     if(!userEntered) {  // Bad sequence
-        return PASS_WITHOUT_USER;
+        exception* ex = new BadSequenceError();
+        throw ex;
     }
     
     else if(incompleteUser->isCorrectPassword(password)) {
         userEntered = false;
         passEntered = true;
         currentUser = incompleteUser;
+        loggedIn = true;
         incompleteUser = NULL;
         
         EventLogger::logUserLogin(currentUser);
         return SUCCESSFUL_LOGIN;
     }
     else {
-        return INVALID_USER_PASS;
+        exception* ex = new InvalidUserPassError();
+        throw ex;
     }
 
 }
 
 int MessageHandler::clientQuit(){
-    
+    if(!loggedIn)
+    {
+        exception* ex = new NotLoggedInError();
+        throw ex;
+    }
     passEntered = false;
+    userEntered = false;
+    loggedIn = false;
     EventLogger::logUserLogout(currentUser);
     currentUser = NULL;
     return QUIT_CODE;
@@ -158,7 +179,6 @@ string getLastPartOfPath(string str){
     if(found == string::npos) return str;
     else{
         string result = str.substr(found + 1); 
-        // cout<< result << "\n";
         return result;
     }
 }
@@ -166,23 +186,30 @@ string getLastPartOfPath(string str){
 int getFileSizeBytes(string filePath){
     struct stat stat_buf;
     int rc = stat(filePath.c_str(), &stat_buf);
-    // cout << "fileSize: " << stat_buf.st_size << "\n"; 
     return rc == 0 ? stat_buf.st_size : -1;
 }
 
 int MessageHandler::handleDownload(string fileName){
+
+    if(!loggedIn)
+    {
+        exception* ex = new NotLoggedInError();
+        throw ex;
+    }
 
     int fileSize = getFileSizeBytes(currentDirectory + "/" + fileName);
     
     bool allowedToDownload = currentUser->handleCapacity(fileSize);
     
     if(!allowedToDownload){
-        return CAPACITY_LACKAGE;
+        exception* e = new DownloadCapacityError();
+        throw e;
     }
 
     string res = getLastPartOfPath(fileName);   // ../server/test.txt => test.txt
     if(currentUser->getAdmin() == false && find(adminFiles.begin(), adminFiles.end(), fileName) != adminFiles.end()){
-        return FILE_UNAVAILABLE;
+        exception* e = new FileUnavailableError();
+        throw e;
     }
     string downloadPath = (DOWNLOAD_FOLDER + res);
     runCommandOnTerminal("cd " + currentDirectory + " && cat ", fileName, downloadPath);
@@ -194,8 +221,14 @@ int MessageHandler::handleDownload(string fileName){
 // Some differences exist between upload and download, implemented later.
 
 int MessageHandler::handleUpload(string fileName){
+    if(!loggedIn)
+    {
+        exception* ex = new NotLoggedInError();
+        throw ex;
+    }
     if(currentUser->getAdmin() == false){
-        return FILE_UNAVAILABLE;
+        exception* e = new FileUnavailableError();
+        throw e;
     }
     string res = getLastPartOfPath(fileName);
     string uploadPath = (UPLOAD_FOLDER + res);

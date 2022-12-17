@@ -21,6 +21,19 @@ void User::printUserData(){
     cout << "\n\n";
 }
 
+bool User::handleCapacity(int fileToDownloadSize){
+    // cout << "maxCapacity: " << maxDownloadSize << "\n";
+    if(fileToDownloadSize > maxDownloadSize){
+        return false;
+    }
+    else{
+        maxDownloadSize -= fileToDownloadSize;
+        // cout << "fileSize: " << fileToDownloadSize << "\n";
+        // cout << "maxCapacity: " << maxDownloadSize << "\n";
+        return true;
+    }
+}
+
 bool User::identicalUsername(string username_) {
     return username == username_;
 }

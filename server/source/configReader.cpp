@@ -31,6 +31,7 @@ void ConfigReader::readConfigFile(){
         if(admin == "true")
             isAdmin = true;
         int size = stoi(record["size"].get<string>());
+        size = (size * 1024); // convert into Bytes
         User* newUser = new User(username, password, size, isAdmin);
         users.push_back(newUser);
     }

@@ -4,6 +4,12 @@
 #include "../header/user.hpp"
 #include <string>
 #include <vector>
+#include <sstream>
+#include <fstream>
+#include <iostream>
+#include <exception>
+#include <algorithm>
+#include <sys/stat.h>
 
 #define USER_SIGNIN     "user"
 #define PASS_SIGNIN     "pass"
@@ -11,10 +17,10 @@
 #define QUIT            "quit"
 #define DOWNLOAD        "retr"
 #define UPLOAD          "upload"
-
 #define DOWNLOAD_FOLDER " ../client/clientDownloads/"
 #define UPLOAD_FOLDER " ../Files/"
 
+const int MAX_FILE_SIZE = 1048576;  // Bytes
 
 class MessageHandler{
 public:

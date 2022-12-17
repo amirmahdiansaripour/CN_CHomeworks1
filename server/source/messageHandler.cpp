@@ -1,12 +1,6 @@
 #include "../header/messageHandler.hpp"
 #include "../header/response.hpp"
 #include "../header/eventLogger.hpp"
-#include <vector>
-#include <sstream>
-#include <fstream>
-#include <iostream>
-#include <exception>
-#include <algorithm>
 using namespace std;
 
 string downloadedFileContent;
@@ -169,7 +163,23 @@ string getLastPartOfPath(string str){
     }
 }
 
+int getFileSizeBytes(string filePath){
+    struct stat stat_buf;
+    int rc = stat(filePath.c_str(), &stat_buf);
+    // cout << "fileSize: " << stat_buf.st_size << "\n"; 
+    return rc == 0 ? stat_buf.st_size : -1;
+}
+
 int MessageHandler::handleDownload(string fileName){
+
+    int fileSize = getFileSizeBytes(currentDirectory + "/" + fileName);
+    
+    bool allowedToDownload = currentUser->handleCapacity(fileSize);
+    
+    if(!allowedToDownload){
+        return CAPACITY_LACKAGE;
+    }
+
     string res = getLastPartOfPath(fileName);   // ../server/test.txt => test.txt
     if(currentUser->getAdmin() == false && find(adminFiles.begin(), adminFiles.end(), fileName) != adminFiles.end()){
         return FILE_UNAVAILABLE;

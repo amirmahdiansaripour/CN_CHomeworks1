@@ -42,6 +42,10 @@ string Response::getResponseMessage(int responseCode)
 			sendToClient = (code + ": File unavailable.");
 			break;
 
+		case(CAPACITY_LACKAGE):
+			sendToClient = (code + ": Can't open data connection.");
+			break;
+			
 		default:
 			sendToClient = "Error";
 	}

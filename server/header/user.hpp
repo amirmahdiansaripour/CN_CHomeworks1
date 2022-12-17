@@ -11,6 +11,7 @@ public:
     std::string getUsername();
     bool isCorrectPassword(std::string inputPassword);
     bool getAdmin();
+    bool handleCapacity(int);
 private:
     std::string username;
     std::string password;

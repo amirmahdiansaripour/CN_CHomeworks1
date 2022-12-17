@@ -4,12 +4,13 @@
 using namespace std;
 
 vector<User*> usersTosend;
+vector<string> adminFilesToSend;
 
 Server::Server(const string path){
     configReader = ConfigReader(path);
-    fileNames = configReader.getFilesNames();
+    adminFiles = configReader.getAdminFiles();
     users = configReader.getUsers();
-
+    adminFilesToSend = adminFiles;
 }
 
 void error(const char *msg){
@@ -43,7 +44,7 @@ typedef struct threadArg threadArg;
 
 void* handleConnection(void* thread){
     threadArg *arg = (threadArg *) thread;
-    MessageHandler* messageHandler = new MessageHandler(usersTosend);
+    MessageHandler* messageHandler = new MessageHandler(usersTosend, adminFilesToSend);
     // cout << messageHandler->usersFromServer.size() << "gg\n";
     char readClient[1024];
     string sendClient;

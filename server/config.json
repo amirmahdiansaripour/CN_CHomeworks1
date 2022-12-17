@@ -16,6 +16,8 @@
     }
   ],
     "files": [
-      "config.json"
+      "config.json",
+      "test.txt",
+      "download_test.txt"
     ]
 }

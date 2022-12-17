@@ -22,7 +22,7 @@ public:
     void run();
 private:
     ConfigReader configReader;
-    std::vector<std::string> fileNames;
+    std::vector<std::string> adminFiles;
     std::vector<User*> users;
     int setupServer(int);
     int acceptClient(int);

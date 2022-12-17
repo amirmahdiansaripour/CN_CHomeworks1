@@ -6,6 +6,7 @@
 #include <fstream>
 #include <iostream>
 #include <exception>
+#include <algorithm>
 using namespace std;
 
 string downloadedFileContent;
@@ -25,11 +26,8 @@ vector<string> parseMessage(string message) {
 void runCommandOnTerminal(string commandShell, string fileToUpload, string fileToWrite){
 
     commandShell += (" " + fileToUpload);
-
     commandShell += " >> ";
-
     commandShell += fileToWrite;
-
     system(commandShell.c_str());
 }
 
@@ -62,13 +60,14 @@ string getCurrentDir(){
     return result;
 }
 
-MessageHandler::MessageHandler(vector<User*> users){
+MessageHandler::MessageHandler(vector<User*> users, vector<string> adminFiles_){
     usersFromServer = users;
     userEntered = false;
     passEntered = false;
     incompleteUser = NULL;
     currentUser = NULL;
     currentDirectory = getCurrentDir();
+    adminFiles = adminFiles_;
 }
 
 string MessageHandler::handle(string message){
@@ -172,7 +171,9 @@ string getLastPartOfPath(string str){
 
 int MessageHandler::handleDownload(string fileName){
     string res = getLastPartOfPath(fileName);   // ../server/test.txt => test.txt
-
+    if(currentUser->getAdmin() == false && find(adminFiles.begin(), adminFiles.end(), fileName) != adminFiles.end()){
+        return FILE_UNAVAILABLE;
+    }
     string downloadPath = (DOWNLOAD_FOLDER + res);
     runCommandOnTerminal("cd " + currentDirectory + " && cat ", fileName, downloadPath);
     downloadedFileContent = (getFileContent(fileName) + "\n");

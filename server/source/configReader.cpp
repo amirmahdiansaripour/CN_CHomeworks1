@@ -14,7 +14,7 @@ void ConfigReader::printData(){
     for(User* user : users){
         user->printUserData();
     }
-    for(string fileName : fileNames){
+    for(string fileName : adminFiles){
         cout << fileName << "\n";
     }
 }
@@ -36,7 +36,7 @@ void ConfigReader::readConfigFile(){
     }
 
     for(auto fileRecord: j["files"])
-        fileNames.push_back(fileRecord.get<string>());
+        adminFiles.push_back(fileRecord.get<string>());
 
     // printData();
 
@@ -46,6 +46,6 @@ vector<User*> ConfigReader::getUsers(){
     return users;
 }
 
-vector<string> ConfigReader::getFilesNames(){
-    return fileNames;
+vector<string> ConfigReader::getAdminFiles(){
+    return adminFiles;
 }

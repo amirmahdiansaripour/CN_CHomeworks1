@@ -9,8 +9,11 @@ vector<string> adminFilesToSend;
 Server::Server(const string path){
     configReader = ConfigReader(path);
     adminFiles = configReader.getAdminFiles();
-    users = configReader.getUsers();
     adminFilesToSend = adminFiles;
+    
+    users = configReader.getUsers();
+    commandPort = configReader.getCommandChannel();
+    dataPort = configReader.getDataChannel();
 }
 
 void error(const char *msg){
@@ -79,8 +82,8 @@ void* handleConnection(void* thread){
 
 void Server::run(){
 
-    int commandChannel = setupServer(8081);
-    int dataChannel = setupServer(8084);
+    int commandChannel = setupServer(commandPort);
+    int dataChannel = setupServer(dataPort);
     pthread_t threads[MAX_CLIENTS];  
     int numOfThreads = 0;
     usersTosend = users;

@@ -19,6 +19,14 @@ void ConfigReader::printData(){
     }
 }
 
+int ConfigReader::getCommandChannel(){
+    return commandChannel;
+}
+
+int ConfigReader::getDataChannel(){
+    return dataChannel;
+}
+
 void ConfigReader::readConfigFile(){
     ifstream inputFile(path);
     json j;
@@ -39,6 +47,8 @@ void ConfigReader::readConfigFile(){
     for(auto fileRecord: j["files"])
         adminFiles.push_back(fileRecord.get<string>());
 
+    commandChannel = stoi(j["commandChannel"].get<string>());
+    dataChannel = stoi(j["dataChannel"].get<string>());
     // printData();
 
 }

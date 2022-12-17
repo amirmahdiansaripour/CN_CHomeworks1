@@ -20,12 +20,14 @@ class Server{
 public:
     Server(const std::string);
     void run();
+    int setupServer(int);
+    int acceptClient(int);
 private:
     ConfigReader configReader;
     std::vector<std::string> adminFiles;
     std::vector<User*> users;
-    int setupServer(int);
-    int acceptClient(int);
+    int commandPort;
+    int dataPort;
 };
 
 #endif

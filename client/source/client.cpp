@@ -23,8 +23,8 @@ void Client::run()
 {
     string request;    
     
-    int commandChannel = connectServer(8081);
-    int dataChannel = connectServer(8084);
+    int commandChannel = connectServer(commandPort);
+    int dataChannel = connectServer(dataPort);
     char readFromServer[1024];
     while(true) 
     {

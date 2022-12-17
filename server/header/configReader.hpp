@@ -19,11 +19,15 @@ public:
     std::vector<User*> getUsers();
     void readConfigFile();
     void printData();
+    int getCommandChannel();
+    int getDataChannel();
     // void addUser(auto record);
 private:
     std::string path;
     std::vector<std::string> adminFiles;
     std::vector<User*> users;
+    int commandChannel;
+    int dataChannel;
 };
 
 

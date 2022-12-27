@@ -1,6 +1,6 @@
 {
-  "commandChannel": "8081",
-  "dataChannel": "8084",
+  "commandChannel": 8080,
+  "dataChannel": 8081,
   "users": [
     {
 		"user": "Ali",
@@ -17,7 +17,7 @@
   ],
     "files": [
       "config.json",
-      "test.txt",
-      "download_test.txt"
+      "download_test_private.txt",
+      "upload_test_private.txt"
     ]
 }

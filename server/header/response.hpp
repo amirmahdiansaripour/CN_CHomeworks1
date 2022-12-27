@@ -21,8 +21,9 @@ const std::string passHelp = "PASS [password], Its argument is used to specify t
 const std::string downloadHelp = "RETR [name], Its argument is used to specify the user's string. It is used for downloading an existing file.\n";
 const std::string uploadHelp = "UPLOAD [name], Its argument is used to specify the user's string. It is used for uploading an existing file.\n";
 const std::string quitHelp = "QUIT, It is used for quitting from the system.\n";
+const std::string helpHelp = "HELP, It is used to show the commands and their explanation\n";
 
-const std::string helpResponse = userHelp + passHelp + downloadHelp + uploadHelp + quitHelp;
+const std::string helpResponse = userHelp + passHelp + downloadHelp + uploadHelp + quitHelp + helpHelp;
 
 class Response {
 public:

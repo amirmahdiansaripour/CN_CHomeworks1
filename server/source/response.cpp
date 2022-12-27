@@ -11,7 +11,7 @@ string Response::getResponseMessage(int responseCode)
 	switch(responseCode)
 	{
 		case(USERNAME_FOUND):
-			sendToClient = (code + ": User name okay, need password");
+			sendToClient = (code + ": User name okay, need password.");
 			break;
 
 		// case(INVALID_USER_PASS):

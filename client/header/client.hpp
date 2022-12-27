@@ -8,8 +8,8 @@
 #include <sys/time.h>
 #include <netinet/in.h>
 
-const int commandPort   = 8081;
-const int dataPort      = 8084;
+const int commandPort   = 8080;
+const int dataPort      = 8081;
 
 class Client{
 public:

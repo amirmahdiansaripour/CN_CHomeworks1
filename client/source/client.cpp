@@ -11,7 +11,7 @@ bool needDataChannel(string recieveFromServer){
     if(recieveFromServer == "") return false;
     // cout << "recieveFromServer: \n";
     // cout << recieveFromServer;
-    size_t found = recieveFromServer.find("Successful Download.");
+    size_t found = recieveFromServer.find("retr");
     if(found != string::npos)   return true;
     else return false;
 }
@@ -26,13 +26,13 @@ void Client::run()
     int commandChannel = connectServer(commandPort);
     int dataChannel = connectServer(dataPort);
     char readFromServer[1024];
-    while(true) 
+    while(getline(cin, request)) 
     {
-        getline(cin, request);
+        // getline(cin, request);
         send(commandChannel, request.c_str(), request.size(), 0);
         recv(commandChannel, readFromServer, sizeof(readFromServer), 0);
         cout << "commandChannel: \n" << readFromServer << "\n";
-        if(needDataChannel(readFromServer)){
+        if(needDataChannel(request)){
             recv(dataChannel, readFromServer, sizeof(readFromServer), 0);
             cout << "dataChannel: \n" << readFromServer << "\n";
         }

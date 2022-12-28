@@ -7,7 +7,8 @@
 #include <stdlib.h>
 #include <string>
 
-const std::string HOME_FILE = "home.html";
+
+
 class HttpServer {
     public:
         HttpServer(std::string ipAddress_, int port_);
@@ -23,9 +24,7 @@ class HttpServer {
         void startServer();
         int acceptConnection();
         void sendResponse(std::string response);
-        std::string getFileName(std::string response);
         std::string createResponse(std::string fileName);
-        std::string getFileContent(std::string address);
 };
 
 

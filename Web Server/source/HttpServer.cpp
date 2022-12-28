@@ -1,4 +1,5 @@
 #include "../header/HttpServer.hpp"
+#include "../header/RequestHandler.hpp"
 #include <unistd.h>
 #include <sstream>
 #include <fstream>
@@ -53,7 +54,7 @@ void HttpServer::run()
     std::cout << "Listening on address : " << inet_ntoa(socketAddress.sin_addr) << " port: " << ntohs(socketAddress.sin_port) << "\n";
 
     int bytesReceived;
-
+    RequestHandler requestHandler;
     while (true) 
     {
         std::cout << "Waiting for a new connection\n";
@@ -67,10 +68,8 @@ void HttpServer::run()
         }
 
         //std::cout <<  "Client Request: " << std::string(buffer) << "\n";
-        std::string fileName = getFileName(std::string(buffer));
         std::cout << "Received request from client\n";
-        std::string fileContent = getFileContent(fileName);
-        sendResponse(createResponse(fileName));
+        sendResponse(requestHandler.handleGetRequest(std::string(buffer)));
 
         close(newSocket);
 
@@ -90,19 +89,6 @@ int HttpServer::acceptConnection()
     return newSocket;
 }
 
-std::string HttpServer::createResponse(std::string fileName)
-{
-    if(fileName == "")
-    {
-        fileName = HOME_FILE;   
-    }
-    std::string fileContent = getFileContent(fileName);
-    
-    std::ostringstream ss;
-        ss << "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: " << fileContent.size() << "\n\n"
-           << fileContent;
-    return ss.str();
-}
 
 void HttpServer::sendResponse(std::string response)
 {
@@ -120,47 +106,3 @@ void HttpServer::sendResponse(std::string response)
     }
 }
 
-std::string HttpServer::getFileName(std::string response)
-{
-    std::stringstream ss;
-    ss << response;
-
-    std::string item, res;
-    res = "";
-    while(true)
-    {
-        ss >> item;
-        res += item;
-        if(item == "GET")
-            break;
-    }
-    
-    std::cout << "Pre Get Content: " << res << "\n";
-    std::string fileName;
-    ss >> fileName;
-    fileName.erase(0,1);
-
-    std::cout << "Filename " << fileName << "\n";
-    return fileName;
-}
-
-std::string HttpServer::getFileContent(std::string address)
-{
-    std::ifstream fileReader(address);
-    std::string content;
-
-    if(!fileReader.is_open())
-    {
-        content = "<!DOCTYPE html> <html lang=\"en\"> <body> <h1> HOME </h1> <p> 404 Error </p> </body> </html>";
-        return content;
-    }
-
-    while(!fileReader.eof())
-    {
-        content += fileReader.get();
-    }
-    fileReader.get();
-
-    return content;
-
-}

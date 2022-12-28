@@ -27,7 +27,6 @@ vector<string> parseMessage(string message) {
 }
 
 void runCommandOnTerminal(string commandShell, string fileToUpload, string fileToWrite){
-
     commandShell += (" " + fileToUpload);
     commandShell += " >> ";
     commandShell += fileToWrite;
@@ -40,8 +39,8 @@ string getFileContent(string address){
     string fileContent;
 
     if(!myfile.is_open()){
-        perror("ERROR: could not open file!\n");
-        exit(0);
+        exception* ex = new SyntaxError();
+        throw ex;
     }
 
     while(!myfile.eof()){
@@ -114,6 +113,11 @@ string MessageHandler::handle(string message){
             string fileName_ = parsedMessage[1];
             int upLoadRes = handleUpload(fileName_);
             return (uploadedFileContent + response.getResponseMessage(upLoadRes));
+        }
+
+        else{
+            exception* ex = new SyntaxError();
+            throw ex;
         }
 
     }

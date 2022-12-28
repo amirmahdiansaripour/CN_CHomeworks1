@@ -32,7 +32,7 @@ void Client::run()
         send(commandChannel, request.c_str(), request.size(), 0);
         recv(commandChannel, readFromServer, sizeof(readFromServer), 0);
         cout << "commandChannel: \n" << readFromServer << "\n";
-        if(needDataChannel(request)){
+        if(needDataChannel(readFromServer)){
             recv(dataChannel, readFromServer, sizeof(readFromServer), 0);
             cout << "dataChannel: \n" << readFromServer << "\n";
         }

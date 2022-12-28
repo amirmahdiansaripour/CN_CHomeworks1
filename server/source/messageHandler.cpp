@@ -103,6 +103,10 @@ string MessageHandler::handle(string message){
         }
         else if(command == DOWNLOAD){
             downloadedFileContent = "";
+            if(parsedMessage.size() < 2){
+                exception* ex = new DefaultError();
+                throw ex;
+            }
             string fileName_ = parsedMessage[1];
             int downloadRes = handleDownload(fileName_);
             return (downloadedFileContent + response.getResponseMessage(downloadRes));
@@ -110,6 +114,10 @@ string MessageHandler::handle(string message){
 
         else if(command == UPLOAD){
             uploadedFileContent = "";
+            if(parsedMessage.size() < 2){
+                exception* ex = new DefaultError();
+                throw ex;
+            }
             string fileName_ = parsedMessage[1];
             int upLoadRes = handleUpload(fileName_);
             return (uploadedFileContent + response.getResponseMessage(upLoadRes));
@@ -209,7 +217,7 @@ int MessageHandler::handleDownload(string fileName){
     
     bool allowedToDownload = currentUser->handleCapacity(fileSize);
     
-    if(!allowedToDownload){
+    if(!allowedToDownload || (fileSize > 1024)){
         exception* e = new DownloadCapacityError();
         throw e;
     }
@@ -238,6 +246,12 @@ int MessageHandler::handleUpload(string fileName){
         exception* e = new FileUnavailableError();
         throw e;
     }
+    int fileSize = getFileSizeBytes(currentDirectory + "/" + fileName);
+    if(fileSize > 1024){
+        exception* e = new DownloadCapacityError();
+        throw e;
+    }
+
     string res = getLastPartOfPath(fileName);
     string uploadPath = (UPLOAD_FOLDER + res);
     runCommandOnTerminal("cd " + currentDirectory + " && cat ", fileName, uploadPath);

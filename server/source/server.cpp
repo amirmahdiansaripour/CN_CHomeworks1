@@ -93,8 +93,6 @@ void Server::run(){
     while (true){
         int commandFd = acceptClient(commandChannel);
         int dataFd = acceptClient(dataChannel);
-        cout << "commandFd : " << commandFd << "\n";
-        cout << "dataFd : " << dataFd << "\n";
         
         if(commandFd == -1 || dataFd == -1)
             error("ERROR: could not accept client\n");

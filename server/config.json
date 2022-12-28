@@ -1,6 +1,6 @@
 {
-  "commandChannel": 8080,
-  "dataChannel": 8081,
+  "commandChannel": "8080",
+  "dataChannel": "8081",
   "users": [
     {
 		"user": "Ali",

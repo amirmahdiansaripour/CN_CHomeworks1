@@ -7,6 +7,7 @@
 How to run
 ### Compile and run in terminal
 ```make```
+
 ```./Server.out 127.0.0.1:8080```
 
 ### Open in browser

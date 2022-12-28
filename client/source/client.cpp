@@ -11,7 +11,7 @@ bool needDataChannel(string recieveFromServer){
     if(recieveFromServer == "") return false;
     // cout << "recieveFromServer: \n";
     // cout << recieveFromServer;
-    size_t found = recieveFromServer.find("retr");
+    size_t found = recieveFromServer.find("Successful Download");
     if(found != string::npos)   return true;
     else return false;
 }

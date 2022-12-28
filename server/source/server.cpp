@@ -48,8 +48,8 @@ typedef struct threadArg threadArg;
 
 void* handleConnection(void* thread){
      threadArg *currArg = (threadArg *) thread;
-     cerr << "argument commandFd " << currArg->commandChannel << "\n";
-     cerr << "argument datafd" << currArg->dataChannel << "\n";
+    //  cerr << "argument commandFd " << currArg->commandChannel << "\n";
+    //  cerr << "argument datafd" << currArg->dataChannel << "\n";
     MessageHandler* messageHandler = new MessageHandler(usersTosend, adminFilesToSend);
     // cout << messageHandler->usersFromServer.size() << "gg\n";
     char readClient[1024];
@@ -58,12 +58,9 @@ void* handleConnection(void* thread){
         memset(readClient, 0, 1024);
         bzero(readClient, 1024);
         bool dchanel;
-        //cerr << "global commandFd " << arg.commandChannel << "\n";
-        //cerr << "global dataFd " << arg.dataChannel << "\n";
         if(recv(currArg->commandChannel, readClient, sizeof(readClient), 0) > 0){
             cout << string(readClient) << " receive check\n";
             sendClient = messageHandler->handle(string(readClient));
-            // cout << "Res: " << sendClient;
             dchanel = needDataChannel(sendClient);
         }
         else{

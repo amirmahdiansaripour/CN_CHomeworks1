@@ -91,6 +91,10 @@ string MessageHandler::handle(string message){
             return response.getResponseMessage(loginPassword(password));
         }
         else if(command == HELP){
+            if(!loggedIn){
+                exception* ex = new NotLoggedInError();
+                throw ex;
+            }
             return response.getResponseMessage(HELP_CODE);
         }
         else if(command == QUIT){
@@ -112,12 +116,12 @@ string MessageHandler::handle(string message){
             return (uploadedFileContent + response.getResponseMessage(upLoadRes));
         }
 
-    }   catch (exception* e) {
-            string ret = string(e->what());
-            delete e;
-            return ret;
-        }
-    // response to each message is provided here.
+    }
+    catch (exception* e) {
+        string ret = string(e->what());
+        delete e;
+        return ret;
+    }
     return NULL;
 }
 

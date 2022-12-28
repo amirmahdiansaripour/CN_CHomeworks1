@@ -227,8 +227,6 @@ int MessageHandler::handleDownload(string fileName){
         exception* e = new FileUnavailableError();
         throw e;
     }
-    string downloadPath = (DOWNLOAD_FOLDER + res);
-    runCommandOnTerminal("cd " + currentDirectory + " && cat ", fileName, downloadPath);
     downloadedFileContent = (getFileContent(fileName) + "\n");
     EventLogger::logDownload(currentUser, fileName);
     return DOWNLOAD_CODE;
@@ -254,8 +252,8 @@ int MessageHandler::handleUpload(string fileName){
 
     string res = getLastPartOfPath(fileName);
     string uploadPath = (UPLOAD_FOLDER + res);
-    runCommandOnTerminal("cd " + currentDirectory + " && cat ", fileName, uploadPath);
     uploadedFileContent = (getFileContent(fileName) + "\n");
+    runCommandOnTerminal("cd " + currentDirectory + " && cat ", fileName, uploadPath);
     EventLogger::logUpload(currentUser, fileName);
     return UPLOAD_CODE;
 }

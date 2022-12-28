@@ -1,5 +1,7 @@
 BUILD_DIR = build
-CFLAGS = g++ -std=c++11 -pthread
+HEADER_DIR = header
+SRC_DIR = source
+CFLAGS = g++ -std=c++11 -I$(HEADER_DIR) -pthread
 
 OBJECTS = \
 	$(BUILD_DIR)/HttpServer.o \
@@ -11,11 +13,11 @@ all: $(BUILD_DIR) Server.out
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
 
-$(BUILD_DIR)/Main.o: main.cpp HttpServer.hpp
-	$(CFLAGS) -c main.cpp -o $(BUILD_DIR)/Main.o
+$(BUILD_DIR)/Main.o: $(SRC_DIR)/main.cpp $(HEADER_DIR)/HttpServer.hpp
+	$(CFLAGS) -c $(SRC_DIR)/main.cpp -o $(BUILD_DIR)/Main.o
 
-$(BUILD_DIR)/HttpServer.o: HttpServer.cpp HttpServer.hpp
-	$(CFLAGS) -c HttpServer.cpp -o $(BUILD_DIR)/HttpServer.o
+$(BUILD_DIR)/HttpServer.o: $(SRC_DIR)/HttpServer.cpp $(HEADER_DIR)/HttpServer.hpp
+	$(CFLAGS) -c $(SRC_DIR)/HttpServer.cpp -o $(BUILD_DIR)/HttpServer.o
 
 Server.out: $(OBJECTS)
 	$(CFLAGS) $(OBJECTS) -o Server.out

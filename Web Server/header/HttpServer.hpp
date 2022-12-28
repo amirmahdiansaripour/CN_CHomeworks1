@@ -6,7 +6,8 @@
 #include <arpa/inet.h>
 #include <stdlib.h>
 #include <string>
-#include <iostream>
+
+const std::string HOME_FILE = "home.html";
 class HttpServer {
     public:
         HttpServer(std::string ipAddress_, int port_);
@@ -22,7 +23,9 @@ class HttpServer {
         void startServer();
         int acceptConnection();
         void sendResponse(std::string response);
-        std::string defaultResponse();
+        std::string getFileName(std::string response);
+        std::string createResponse(std::string fileName);
+        std::string getFileContent(std::string address);
 };
 
 

@@ -7,6 +7,7 @@ const std::string HTML = "html";
 const std::string GIF = "gif";
 const std::string MP3 = "mp3";
 const std::string JPEG = "jpeg";
+const std::string JPG = "jpg";
 const std::string PDF = "pdf";
 
 class RequestHandler
@@ -16,9 +17,11 @@ class RequestHandler
         std::string handleGetRequest(std::string request);
     private:
         std::string getFileName(std::string response);
-        std::string getFileContent(std::string address);
+        std::string getTextFileContent(std::string address);
         std::string getFileType(std::string fileName);
-        std::string htmlFileResponse(std::string content);
+        std::string fileResponse(std::string content, std::string contentType);
+        std::string getImageFileContent(std::string address);
+        std::string getContentType(std::string fileType);
 };
 
 #endif

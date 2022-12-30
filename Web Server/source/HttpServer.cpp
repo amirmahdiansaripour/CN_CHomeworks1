@@ -67,7 +67,7 @@ void HttpServer::run()
             error("Failed to read bytes from client\n");
         }
 
-        //std::cout <<  "Client Request: " << std::string(buffer) << "\n";
+        std::cout <<  "Client Request: " << std::string(buffer) << "\n";
         std::cout << "Received request from client\n";
         sendResponse(requestHandler.handleGetRequest(std::string(buffer)));
 

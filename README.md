@@ -11,7 +11,7 @@ How to run
 ```./Server.out 127.0.0.1:<port number>```
 
 ### Open in browser
-Open http://localhost:<port number>/ in a browser
+Open localhost:<port number>/ in a browser
 
 For example:
   ```./Server.out 127.0.0.1:4000```

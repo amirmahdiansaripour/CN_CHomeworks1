@@ -1,4 +1,5 @@
 #include "../header/RequestHandler.hpp"
+#include "../header/exception/Error404.hpp"
 
 #include <sstream>
 #include <iostream>
@@ -6,9 +7,19 @@
 #include <iterator>
 #include <vector>
 
+const std::string HOME_FILE = "home.html";
+const std::string HTML = "html";
+const std::string GIF = "gif";
+const std::string MP3 = "mp3";
+const std::string JPEG = "jpeg";
+const std::string JPG = "jpg";
+const std::string PDF = "pdf";
+const std::string CSS = "css";
+
 const int BYTE_SIZE = 4;
 typedef unsigned char imgByte;
 const std::string FAVICON_REQ_NAME = "favicon.ico";
+const std::string ERROR_404_FILE = "404.html";
 const std::string CONTENT_DIRECTORY = "content/";
 const std::string FAVICON_FILE_NAME = CONTENT_DIRECTORY + "favicon.png";
 
@@ -19,23 +30,35 @@ std::string RequestHandler::handleGetRequest(std::string request)
     std::string fileName = getFileName(request);
     std::string fileNameForRead = CONTENT_DIRECTORY + fileName;
     std::string fileType = getFileType(fileName);
-    std::cerr << "fileType " << fileType << " || " << fileName << "\n";
     std::string fileContent;
-    if(fileName == FAVICON_REQ_NAME)
+    try{
+        if(fileName == FAVICON_REQ_NAME)
+        {
+            fileContent = getBinaryFileContent(FAVICON_FILE_NAME);
+            return fileResponse(fileContent, getContentType(JPG));
+        }
+        else if(fileType == HTML || fileType == CSS)
+        {
+            fileContent = getTextFileContent(fileNameForRead);
+            return fileResponse(fileContent, getContentType(fileType));
+        }
+        else if(fileType == JPEG || fileType == JPG || fileType == GIF || fileType == MP3 || fileType == PDF)
+        {
+            fileContent = getBinaryFileContent(fileNameForRead);
+            return fileResponse(fileContent, getContentType(fileType));
+        }
+        else
+        {
+            std::exception* ex = new Error404();
+            throw ex;
+        }
+    } catch(std::exception* ex)
     {
-        std::cerr << "---------------HELLO---------\n\n\n\n\"";
-        fileContent = getImageFileContent(FAVICON_FILE_NAME);
-        return fileResponse(fileContent, getContentType(JPG));
-    }
-    else if(fileType == HTML)
-    {
-        fileContent = getTextFileContent(fileNameForRead);
-        return fileResponse(fileContent, getContentType(fileType));
-    }
-    else if(fileType == JPEG || fileType == JPG || fileType == GIF)
-    {
-        fileContent = getImageFileContent(fileNameForRead);
-        return fileResponse(fileContent, getContentType(fileType));
+        std::cout << ex->what() << "\n";
+
+        fileContent = getTextFileContent(CONTENT_DIRECTORY + ERROR_404_FILE);
+        delete ex;
+        return fileResponse(fileContent, HTML);
     }
 }
 
@@ -44,19 +67,16 @@ std::string RequestHandler::getFileName(std::string response)
     std::stringstream ss;
     ss << response;
 
-    std::cerr << "GETFILENAME " << response <<"\n";
     std::string item, res;
     res = "";
     while(true)
     {
         ss >> item;
         res += item;
-        //std::cerr << "item: " << item;
         if(item == "GET")
             break;
     }
     
-    std::cout << "Pre Get Content: " << res << "\n";
     std::string fileName;
     ss >> fileName;
     
@@ -66,7 +86,6 @@ std::string RequestHandler::getFileName(std::string response)
     {
         fileName = HOME_FILE;
     }
-    std::cout << "Filename " << fileName << "\n";
     return fileName;
 }
 
@@ -74,14 +93,11 @@ std::string RequestHandler::getTextFileContent(std::string address)
 {
     std::ifstream fileReader(address);
     std::string content;
-
     if(!fileReader.is_open())
     {
-        content = "<!DOCTYPE html> <html lang=\"en\"> <body> <h1> HOME </h1> <p> 404 Error </p> </body> </html>";
-        return content;
+        std::exception* ex = new Error404();
+        throw ex;
     }
-
-    std::cerr << "File " << content << "\n";
 
     while(!fileReader.eof())
     {
@@ -125,40 +141,31 @@ std::string RequestHandler::getContentType(std::string fileType)
         return "audio/mpeg";
     else if(fileType == GIF)
         return "image/gif";
+    else if(fileType == CSS)
+        return "text/css";
+    else
+    {
+        std::exception* ex = new Error404();
+        throw ex;
+    }
 }
 
-std::string RequestHandler::getImageFileContent(std::string address)
+std::string RequestHandler::getBinaryFileContent(std::string address)
 {
-    std::ifstream imgReader(address, std::ios::in | std::ios::binary);
-    std::filebuf* pbuf = imgReader.rdbuf();
+    std::ifstream binaryReader(address, std::ios::in | std::ios::binary);
+    std::filebuf* pbuf = binaryReader.rdbuf();
 
-    //imgReader.seekg (0, std::ios::end);
-    //int length = imgReader.tellg();
-    //char* buffer = new char[BYTE_SIZE];
-    std::vector<unsigned char> buffer(std::istreambuf_iterator<char>(imgReader), {});
-    
-    std::cerr << "BUFFER OUTPUT HERE ";
-    for(unsigned char u:buffer)
-        std::cerr << u;
-    std::cerr << "\n\n";
-    std::cerr << "Image reader\n";
+    std::vector<unsigned char> buffer(std::istreambuf_iterator<char>(binaryReader), {});
 
-    if(imgReader.bad())
+    if(!binaryReader.is_open())
     {
-        return "<!DOCTYPE html> <html lang=\"en\"> <body> <h1> HOME </h1> <p> 404 Error </p> </body> </html>";
+        std::exception* ex = new Error404();
+        throw ex;
     }
 
     std::string content{buffer.begin(), buffer.end()};
-    //imgReader.read(buffer, length);
-    imgReader.close();
+    binaryReader.close();
 
-    std::cerr << "BUFFER " << buffer.size() << " || ";
-    std::cerr <<  content << "\n";
-    //std::ofstream imgWriter("imageOut.jpg", std::ios::out | std::ios::binary);
-    //imgWriter.write(buffer, length);
-    //imgWriter.close();
-
-    //delete buffer;
     return content;
 }
 

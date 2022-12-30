@@ -51,7 +51,7 @@ void HttpServer::run()
         error("Listen failure\n");
     }
     
-    std::cout << "Listening on address : " << inet_ntoa(socketAddress.sin_addr) << " port: " << ntohs(socketAddress.sin_port) << "\n";
+    std::cout << "Listening on address : " << inet_ntoa(socketAddress.sin_addr) << " port: " << ntohs(socketAddress.sin_port) << "\n\n";
 
     int bytesReceived;
     RequestHandler requestHandler;
@@ -67,8 +67,9 @@ void HttpServer::run()
             error("Failed to read bytes from client\n");
         }
 
-        std::cout <<  "Client Request: " << std::string(buffer) << "\n";
         std::cout << "Received request from client\n";
+        std::cout <<  "-----------Client Request-------\n" << std::string(buffer) << "\n-----End of client request----\n\n";
+
         sendResponse(requestHandler.handleGetRequest(std::string(buffer)));
 
         close(newSocket);
@@ -79,14 +80,14 @@ void HttpServer::run()
 
 int HttpServer::acceptConnection()
 {
-    int newSocket = accept(serverFd, (sockaddr*) &socketAddress, &socketAddressSize);
+    int newConnection = accept(serverFd, (sockaddr*) &socketAddress, &socketAddressSize);
     
-    if(newSocket < 0)
+    if(newConnection < 0)
     {
         error("Server failed to accept connection");
     }
 
-    return newSocket;
+    return newConnection;
 }
 
 
@@ -95,14 +96,14 @@ void HttpServer::sendResponse(std::string response)
     long bytesSent;
 
     bytesSent = write(newSocket, response.c_str(), response.size());
-    std::cerr << "Response: " << response << "\n";
+    //std::cout << "----Response to client-------\n" << response << "\n-------End of response to client----\n";
     if(bytesSent == response.size())
     {
-        std::cout << "Server response sent to client\n";
+        std::cout << "Server response sent to client\n\n";
     }
     else
     {
-        std::cout << "Error responding to client\n";
+        std::cout << "Error responding to client\n\n";
     }
 }
 

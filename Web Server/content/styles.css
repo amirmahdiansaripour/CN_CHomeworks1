@@ -1,0 +1,13 @@
+
+#center {
+    text-align: center;
+}
+
+/* Styling */
+    
+body {
+    margin: auto;
+    width: 640px; 
+    padding: 50px;
+    font-family: 'Lexend Deca', sans-serif; 
+}

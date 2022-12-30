@@ -57,9 +57,15 @@ std::string RequestHandler::handleGetRequest(std::string request)
         std::cout << ex->what() << "\n";
 
         fileContent = getTextFileContent(CONTENT_DIRECTORY + ERROR_404_FILE);
+        redirectLocation = ERROR_404_FILE;
         delete ex;
-        return fileResponse(fileContent, HTML);
+        return fileResponse(fileContent, HTML, true);
     }
+}
+
+std::string RequestHandler::redirectHeader(std::string newLocation)
+{
+    return "Location: /" + newLocation + "\n";
 }
 
 std::string RequestHandler::getFileName(std::string response)
@@ -121,11 +127,17 @@ std::string RequestHandler::getFileType(std::string fileName)
 
 }
 
-std::string RequestHandler::fileResponse(std::string content, std::string contentType)
+std::string RequestHandler::fileResponse(std::string content, std::string contentType, bool redirect)
 {
     std::ostringstream ss;
-        ss << "HTTP/1.1 200 OK\nContent-Type: " << contentType << "\nContent-Length: " << content.size() << "\n\n"
-           << content;
+    ss << "HTTP/1.1 200 OK\n";
+    if(redirect)
+    {
+        ss << redirectHeader(redirectLocation);
+    }
+    ss << "Content-Type: " << contentType << "\nContent-Length: " << content.size() << "\n\n";
+
+    ss << content;
     return ss.str();
 }
 
@@ -153,15 +165,15 @@ std::string RequestHandler::getContentType(std::string fileType)
 std::string RequestHandler::getBinaryFileContent(std::string address)
 {
     std::ifstream binaryReader(address, std::ios::in | std::ios::binary);
-    std::filebuf* pbuf = binaryReader.rdbuf();
-
-    std::vector<unsigned char> buffer(std::istreambuf_iterator<char>(binaryReader), {});
-
     if(!binaryReader.is_open())
     {
+        std::cerr << "BAD BAD BAD\n";
         std::exception* ex = new Error404();
         throw ex;
     }
+    std::filebuf* pbuf = binaryReader.rdbuf();
+
+    std::vector<unsigned char> buffer(std::istreambuf_iterator<char>(binaryReader), {});
 
     std::string content{buffer.begin(), buffer.end()};
     binaryReader.close();

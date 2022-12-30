@@ -95,7 +95,7 @@ void HttpServer::sendResponse(std::string response)
     long bytesSent;
 
     bytesSent = write(newSocket, response.c_str(), response.size());
-
+    std::cerr << "Response: " << response << "\n";
     if(bytesSent == response.size())
     {
         std::cout << "Server response sent to client\n";

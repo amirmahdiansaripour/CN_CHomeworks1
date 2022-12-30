@@ -3,18 +3,28 @@
 #include <sstream>
 #include <iostream>
 #include <fstream>
+#include <iterator>
+#include <vector>
 
 const int BYTE_SIZE = 4;
-
+typedef unsigned char imgByte;
+const std::string FAVICON_REQ_NAME = "favicon.ico";
+const std::string FAVICON_FILE_NAME = "favicon.png";
 RequestHandler::RequestHandler() {}
 
 std::string RequestHandler::handleGetRequest(std::string request)
 {
     std::string fileName = getFileName(request);
     std::string fileType = getFileType(fileName);
-    std::cerr << "fileType " << fileType << "\n";
+    std::cerr << "fileType " << fileType << " || " << fileName << "\n";
     std::string fileContent;
-    if(fileType == HTML)
+    if(fileName == FAVICON_REQ_NAME)
+    {
+        std::cerr << "---------------HELLO---------\n\n\n\n\"";
+        fileContent = getImageFileContent(FAVICON_FILE_NAME);
+        return fileResponse(fileContent, getContentType(JPG));
+    }
+    else if(fileType == HTML)
     {
         fileContent = getTextFileContent(fileName);
         return fileResponse(fileContent, getContentType(fileType));
@@ -117,29 +127,36 @@ std::string RequestHandler::getContentType(std::string fileType)
 std::string RequestHandler::getImageFileContent(std::string address)
 {
     std::ifstream imgReader(address, std::ios::in | std::ios::binary);
-    std::string content;
     std::filebuf* pbuf = imgReader.rdbuf();
 
-    imgReader.seekg (0, std::ios::end);
-    int length = imgReader.tellg();
-    char* buffer = new char[BYTE_SIZE];
+    //imgReader.seekg (0, std::ios::end);
+    //int length = imgReader.tellg();
+    //char* buffer = new char[BYTE_SIZE];
+    std::vector<unsigned char> buffer(std::istreambuf_iterator<char>(imgReader), {});
     
+    std::cerr << "BUFFER OUTPUT HERE ";
+    for(unsigned char u:buffer)
+        std::cerr << u;
+    std::cerr << "\n\n";
     std::cerr << "Image reader\n";
 
     if(imgReader.bad())
     {
-        content = "<!DOCTYPE html> <html lang=\"en\"> <body> <h1> HOME </h1> <p> 404 Error </p> </body> </html>";
-        return content;
+        return "<!DOCTYPE html> <html lang=\"en\"> <body> <h1> HOME </h1> <p> 404 Error </p> </body> </html>";
     }
 
-    imgReader.read(buffer, length);
+    std::string content{buffer.begin(), buffer.end()};
+    //imgReader.read(buffer, length);
     imgReader.close();
 
-    std::cerr << "BUFFER " << length << "\n";
-    std::ofstream imgWriter("imageOut.jpg", std::ios::out | std::ios::binary);
-    imgWriter.write(buffer, length);
-    imgWriter.close();
+    std::cerr << "BUFFER " << buffer.size() << " || ";
+    std::cerr <<  content << "\n";
+    //std::ofstream imgWriter("imageOut.jpg", std::ios::out | std::ios::binary);
+    //imgWriter.write(buffer, length);
+    //imgWriter.close();
 
-    delete buffer;
+    //delete buffer;
     return content;
 }
+
+

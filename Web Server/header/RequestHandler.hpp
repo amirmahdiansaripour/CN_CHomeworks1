@@ -22,6 +22,7 @@ class RequestHandler
         std::string fileResponse(std::string content, std::string contentType);
         std::string getImageFileContent(std::string address);
         std::string getContentType(std::string fileType);
+        std::string getErrorFile();
 };
 
 #endif

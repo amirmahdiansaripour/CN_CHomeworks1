@@ -9,12 +9,15 @@
 const int BYTE_SIZE = 4;
 typedef unsigned char imgByte;
 const std::string FAVICON_REQ_NAME = "favicon.ico";
-const std::string FAVICON_FILE_NAME = "favicon.png";
+const std::string CONTENT_DIRECTORY = "content/";
+const std::string FAVICON_FILE_NAME = CONTENT_DIRECTORY + "favicon.png";
+
 RequestHandler::RequestHandler() {}
 
 std::string RequestHandler::handleGetRequest(std::string request)
 {
     std::string fileName = getFileName(request);
+    std::string fileNameForRead = CONTENT_DIRECTORY + fileName;
     std::string fileType = getFileType(fileName);
     std::cerr << "fileType " << fileType << " || " << fileName << "\n";
     std::string fileContent;
@@ -26,12 +29,12 @@ std::string RequestHandler::handleGetRequest(std::string request)
     }
     else if(fileType == HTML)
     {
-        fileContent = getTextFileContent(fileName);
+        fileContent = getTextFileContent(fileNameForRead);
         return fileResponse(fileContent, getContentType(fileType));
     }
-    else if(fileType == JPEG || fileType == JPG)
+    else if(fileType == JPEG || fileType == JPG || fileType == GIF)
     {
-        fileContent = getImageFileContent(fileName);
+        fileContent = getImageFileContent(fileNameForRead);
         return fileResponse(fileContent, getContentType(fileType));
     }
 }

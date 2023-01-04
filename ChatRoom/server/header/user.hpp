@@ -5,7 +5,7 @@
 
 class User{
 public:
-    User(int);
+    User(std::string, int);
 
 private:
 

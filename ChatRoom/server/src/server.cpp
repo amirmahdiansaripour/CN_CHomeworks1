@@ -14,7 +14,8 @@ Server::Server(){
 }
 
 struct threadArg{
-    int commandChannel;
+    int clientChannel;
+    int clientID;
 }arg;
 
 
@@ -22,34 +23,24 @@ vector<User*> usersTosend;
 
 void* handleConnection(void* thread){
     threadArg *currArg = (threadArg *) thread;
-    //  cerr << "argument commandFd " << currArg->commandChannel << "\n";
+    //  cerr << "argument commandFd " << currArg->clientChannel << "\n";
     //  cerr << "argument datafd" << currArg->dataChannel << "\n";
-    MessageHandler* messageHandler = new MessageHandler(usersTosend);
+    MessageHandler* messageHandler = new MessageHandler(usersTosend, currArg->clientID);
     char readClient[1024];
     string sendClient;
     while(true){
         memset(readClient, 0, 1024);
         bzero(readClient, 1024);
         bool dchanel;
-        if(recv(currArg->commandChannel, readClient, sizeof(readClient), 0) > 0){
+        if(recv(currArg->clientChannel, readClient, sizeof(readClient), 0) > 0){
             cout << string(readClient) << " receive check\n";
             sendClient = messageHandler->handle(string(readClient));
         }
         else{
             error("ERROR: could not receive from client\n");
         }
-        send(currArg->commandChannel, sendClient.c_str(), sizeof(readClient), 0);
+        send(currArg->clientChannel, sendClient.c_str(), sizeof(readClient), 0);
         
-        // }
-        // else{
-        //     vector<string> commandAndDataChannel = splitCommandData(sendClient);
-        //     // cout << "command:" << commandAndDataChannel[0] << "\n";
-        //     // cout << "data:" << commandAndDataChannel[1] << "\n";
-        //     string commandSend = commandAndDataChannel[0];
-        //     string dataSend = commandAndDataChannel[1];
-        //     send(currArg->commandChannel, commandSend.c_str(), sizeof(readClient), 0);
-        //     send(currArg->dataChannel, dataSend.c_str(), sizeof(readClient), 0);
-        // }
     }
 
 }
@@ -60,13 +51,13 @@ void Server::run(){
     threadArg clientArg[MAX_CLIENTS];
     int numOfThreads = 0;
     while (true){
-        int commandFd = acceptClient(fd);
-        
-        if(commandFd == -1)
+        int clientFd = acceptClient(fd);
+        // cout << "clientFd: " << clientFd << "\n";
+        if(clientFd == -1)
             error("ERROR: could not accept client\n");
         
-        clientArg[numOfThreads].commandChannel = commandFd;
-        
+        clientArg[numOfThreads].clientChannel = clientFd;
+        clientArg[numOfThreads].clientID = numOfThreads;
         int result = pthread_create(&threads[numOfThreads], NULL, &handleConnection, (void*)& clientArg[numOfThreads]);
         if(result){
             error(("ERROR: could not create thread " + to_string(numOfThreads) + "th\n").c_str());

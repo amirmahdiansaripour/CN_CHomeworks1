@@ -2,6 +2,7 @@
 
 using namespace std;
 
-User::User(int id_){
+User::User(string name_, int id_){
     id = id_;
+    name = name_;
 }

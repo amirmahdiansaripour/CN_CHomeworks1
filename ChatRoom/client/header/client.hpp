@@ -14,9 +14,11 @@ const std::vector<std::string> messageID = {"0000", "0001", "0010", "0011", "010
 "1110", "1111"};
 
 const std::string LISTCOMMAND = "list";
+const std::string INFOCOMMAND = "info";
 
 const std::string CONNECT   = "0001";
 const std::string LIST      = "0011";      //3
+const std::string INFO      = "0101";      //5
 
 class Client{
 public:

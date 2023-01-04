@@ -30,7 +30,6 @@ string generateRandomString(){
 
 string getUserIDInfoReq(string req){
     string res = req.substr(9, req.size()); 
-    cout << "res: " << res << "\n";
     return res;
 }
 
@@ -84,6 +83,18 @@ string MessageHandler::handleListReq(){
 
 string MessageHandler::handleInfo(string request){
     int demandedID = stoi(getUserIDInfoReq(request));
-    cout <<"demandedID : " << demandedID << "\n";
-    return users[demandedID]->getName();
+
+    string res = INFOREPLY + generateRandomString();
+
+    if(demandedID >= users.size())
+        res += "2";
+    
+    else{
+        string demandedName = users[demandedID]->getName();
+        int messageLen = 2 + demandedName.size();
+        res += to_string(messageLen);
+        res += (" " + demandedName);
+    }
+
+    return res;
 }

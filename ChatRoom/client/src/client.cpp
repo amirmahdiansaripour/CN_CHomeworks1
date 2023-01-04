@@ -39,6 +39,12 @@ vector<string> getNames(string unsplitted){
     return v;
 }
 
+void printList(string readFromServer){
+    vector<string> splittedData = getNames(readFromServer);
+    for(string s : splittedData)
+    cout << "- " << s << "\n";    
+}
+
 Client::Client(int port_, string name_){
     port = port_;
     name = name_;
@@ -57,18 +63,30 @@ void Client::run()
             sendToClient = LIST + generateRandomString() + "2";
             send(commandChannel, sendToClient.c_str(), sendToClient.size(), 0);
             recv(commandChannel, readFromServer, sizeof(readFromServer), 0);
-            // cout << "commandChannel: \n" << readFromServer << "\n";
-            vector<string> splittedData = getNames(readFromServer);
-            for(string s : splittedData)
-                cout << "- " << s << "\n";
-        
+            printList(readFromServer);
         }
-        // cout << "commandChannel: \n" << readFromServer << "\n";
-        // if(needDataChannel(readFromServer)){
-        //     recv(dataChannel, readFromServer, sizeof(readFromServer), 0);
-        //     cout << "dataChannel: \n" << readFromServer << "\n";
-        // }
+
+        else if(request.substr(0, 4) == INFOCOMMAND){
+            sendToClient = INFO + generateRandomString() + "4" + request.substr(5, request.size());
+            send(commandChannel, sendToClient.c_str(), sendToClient.size(), 0);
+            recv(commandChannel, readFromServer, sizeof(readFromServer), 0);
+            if(string(readFromServer).find(" ") == string::npos){
+                cout << "-Payload is empty\n";
+            }
+            else{
+                printList(readFromServer);
+            }
+
+        }
+
+
+
+
+
     }
+
+
+
 }
 
 int Client::connectServer(int port) 

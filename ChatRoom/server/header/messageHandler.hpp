@@ -13,6 +13,7 @@ const std::string CONNACK   = "0010";      //2
 const std::string LIST      = "0011";      //3
 const std::string LISTREPLY = "0100";      //4
 const std::string INFO      = "0101";      //5
+const std::string INFOREPLY = "0110";      //6
 
 class MessageHandler{
 public:

@@ -1,4 +1,4 @@
-# FTP_server
+# Assignments of computer network course (Fall 2022)
 
 
 

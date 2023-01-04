@@ -18,14 +18,13 @@ struct threadArg{
     int clientID;
 }arg;
 
+MessageHandler* messageHandler = new MessageHandler();
 
-vector<User*> usersTosend;
 
 void* handleConnection(void* thread){
     threadArg *currArg = (threadArg *) thread;
     //  cerr << "argument commandFd " << currArg->clientChannel << "\n";
     //  cerr << "argument datafd" << currArg->dataChannel << "\n";
-    MessageHandler* messageHandler = new MessageHandler(usersTosend, currArg->clientID);
     char readClient[1024];
     string sendClient;
     while(true){
@@ -33,14 +32,9 @@ void* handleConnection(void* thread){
         bzero(readClient, 1024);
         bool dchanel;
         if(recv(currArg->clientChannel, readClient, sizeof(readClient), 0) > 0){
-            cout << string(readClient) << " receive check\n";
+            cout << "Client: " << string(readClient) << "\n";
             sendClient = messageHandler->handle(string(readClient));
 
-
-
-            if(string(readClient).substr(0, 4) == "0001"){  //update users
-                usersTosend = messageHandler->getUsers();
-            }
 
 
 

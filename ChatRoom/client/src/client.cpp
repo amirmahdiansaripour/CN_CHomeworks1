@@ -7,20 +7,39 @@ void error(const char *msg){
     exit(0);
 }
 
+string generateRandomString(){
+    srand((unsigned) time(NULL));
+    int random = rand() % 16;
+    return messageID[random];
+}
 
-Client::Client(){
+void Client::sendInitData(){
+    char readFromServer[1024];
+    int messageSize = 2 + name.size();
+    string message = CONNECT + generateRandomString() + to_string(messageSize) + name;
+    send(commandChannel, message.c_str(), message.size(), 0);
+    recv(commandChannel, readFromServer, sizeof(readFromServer), 0);
+    cout << "commandChannel: \n" << readFromServer << "\n";
+}
+
+Client::Client(int port_, string name_){
+    port = port_;
+    name = name_;
+    commandChannel = connectServer(port);
+    sendInitData();
 }
 
 void Client::run()
 {
     string request;    
-    
-    int commandChannel = connectServer(PORT);
+    string sendToClient;
     char readFromServer[1024];
     while(getline(cin, request)) 
     {
-        // getline(cin, request);
-        send(commandChannel, request.c_str(), request.size(), 0);
+        if(request == LISTCOMMAND){
+            sendToClient = LIST + generateRandomString() + "2";
+        }
+        send(commandChannel, sendToClient.c_str(), sendToClient.size(), 0);
         recv(commandChannel, readFromServer, sizeof(readFromServer), 0);
         cout << "commandChannel: \n" << readFromServer << "\n";
         // if(needDataChannel(readFromServer)){

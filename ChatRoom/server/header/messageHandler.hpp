@@ -17,7 +17,7 @@ const std::string INFO      = "0101";      //5
 class MessageHandler{
 public:
 
-    MessageHandler(std::vector<User*>, int);
+    MessageHandler();
     std::string handle(std::string);
     std::string handleConnectReq(std::string);
     std::string handleListReq();
@@ -25,7 +25,6 @@ public:
     std::vector<User*> getUsers();
 private:
     std::vector<User*> users;
-    int thisClient;
 };
 
 

@@ -4,9 +4,7 @@ using namespace std;
 
 
 
-MessageHandler::MessageHandler(vector<User*> u, int clientID){
-    users = u;
-    thisClient = clientID;
+MessageHandler::MessageHandler(){
 }
 
 vector<User*> MessageHandler::getUsers(){
@@ -62,7 +60,7 @@ string MessageHandler::handle(string request){
 string MessageHandler::handleConnectReq(string req){
     string userName = getPayLoad(req);
     // cout << "user: " << userName << "\n";
-    User* newUser = new User(userName, thisClient);
+    User* newUser = new User(userName, users.size());
     users.push_back(newUser);
     
     return CONNACK + generateRandomString() + "2";

@@ -34,7 +34,7 @@ void* handleConnection(void* thread){
         if(recv(currArg->clientChannel, readClient, sizeof(readClient), 0) > 0){
             cout << "Client: " << string(readClient) << "\n";
             sendClient = messageHandler->handle(string(readClient));
-
+            cout << "Response: " << sendClient << "\n";
 
 
 

@@ -73,7 +73,7 @@ string MessageHandler::handleListReq(){
     // cout << "users.size() : " << users.size() << "\n";
     string res = LISTREPLY + generateRandomString() + to_string(messageLen);
     for(User* u : users){
-        usersID.push_back(to_string(u->getID()));
+        usersID.push_back(u->getName());
     }
     for(string s : usersID){
         res += (" " +  s);

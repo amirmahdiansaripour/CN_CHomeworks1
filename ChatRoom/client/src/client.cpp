@@ -19,7 +19,24 @@ void Client::sendInitData(){
     string message = CONNECT + generateRandomString() + to_string(messageSize) + name;
     send(commandChannel, message.c_str(), message.size(), 0);
     recv(commandChannel, readFromServer, sizeof(readFromServer), 0);
-    cout << "commandChannel: \n" << readFromServer << "\n";
+    // cout << "commandChannel: \n" << readFromServer << "\n";
+}
+
+vector<string> getNames(string unsplitted){
+    
+    stringstream ss(unsplitted);
+ 
+    vector<string> v;
+ 
+    while (getline(ss, unsplitted, ' ')) {
+        v.push_back(unsplitted);
+    }
+    vector<string>::iterator it;
+  
+    it = v.begin();
+    v.erase(it);
+
+    return v;
 }
 
 Client::Client(int port_, string name_){
@@ -38,10 +55,15 @@ void Client::run()
     {
         if(request == LISTCOMMAND){
             sendToClient = LIST + generateRandomString() + "2";
+            send(commandChannel, sendToClient.c_str(), sendToClient.size(), 0);
+            recv(commandChannel, readFromServer, sizeof(readFromServer), 0);
+            // cout << "commandChannel: \n" << readFromServer << "\n";
+            vector<string> splittedData = getNames(readFromServer);
+            for(string s : splittedData)
+                cout << "- " << s << "\n";
+        
         }
-        send(commandChannel, sendToClient.c_str(), sendToClient.size(), 0);
-        recv(commandChannel, readFromServer, sizeof(readFromServer), 0);
-        cout << "commandChannel: \n" << readFromServer << "\n";
+        // cout << "commandChannel: \n" << readFromServer << "\n";
         // if(needDataChannel(readFromServer)){
         //     recv(dataChannel, readFromServer, sizeof(readFromServer), 0);
         //     cout << "dataChannel: \n" << readFromServer << "\n";

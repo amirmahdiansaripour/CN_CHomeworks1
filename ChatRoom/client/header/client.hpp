@@ -3,6 +3,7 @@
 
 #include <sys/socket.h>
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
 #include <arpa/inet.h>

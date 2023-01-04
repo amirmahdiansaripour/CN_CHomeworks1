@@ -17,6 +17,7 @@ const std::string LISTCOMMAND       = "list";
 const std::string INFOCOMMAND       = "info";
 const std::string SENDCOMMAND       = "send";
 const std::string RECEIVECOMMAND    = "receive";
+const std::string QUITCOMMAND       = "quit";
 
 const std::string CONNECT   = "0001";      //1
 const std::string LIST      = "0011";      //3
@@ -30,6 +31,11 @@ public:
     void run();
     int connectServer(int);
     void sendInitData();
+    void infoReq(std::string);
+    void listReq(std::string);
+    void sendReq(std::string);
+    void receiveReq(std::string);
+    void quitReq();
 private:
     int port;
     std::string name;

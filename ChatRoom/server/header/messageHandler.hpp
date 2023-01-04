@@ -20,6 +20,8 @@ const std::string SENDREPLY = "1000";      //8
 const std::string RECEIVE   = "1001";      //9
 const std::string RECEIVEREPLY = "1010";   //10
 
+const std::string QUITCOMMAND  = "quit";
+
 class MessageHandler{
 public:
 
@@ -29,6 +31,7 @@ public:
     std::string handleListReq();
     std::string handleInfo(std::string);
     std::string handleSend(std::vector<std::string>);
+    std::string handleQuit();
     User* findSender();
     std::string handleReceive();
 private:

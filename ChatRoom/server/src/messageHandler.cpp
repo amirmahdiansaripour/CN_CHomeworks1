@@ -46,6 +46,11 @@ string getUserIDInfoReq(string req){
 string MessageHandler::handle(string request, int clientFd_){
     string reqType = request.substr(0, 4);
     clientFd = clientFd_;
+
+    if(request == QUITCOMMAND){
+        return handleQuit();
+    }
+
     if(reqType == CONNECT){
         return handleConnectReq(request, clientFd_);
 
@@ -153,4 +158,13 @@ string MessageHandler::handleReceive(){
     else{
         return RECEIVEREPLY + generateRandomString() + to_string(messageLen) + "0";
     }
+}
+
+string MessageHandler::handleQuit(){
+    User* currUser = findSender();
+    int currentIndex = currUser->getID();
+    vector<User*>::iterator it;
+    it = users.begin() + currentIndex;
+    users.erase(it);
+    return "Successful quit";
 }

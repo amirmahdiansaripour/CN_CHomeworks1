@@ -47,61 +47,95 @@ Client::Client(int port_, string name_){
     sendInitData();
 }
 
+
+void Client::listReq(string request){
+    string sendToServer;
+    char readFromServer[1024];
+    sendToServer = LIST + generateRandomString() + "2";
+    send(commandChannel, sendToServer.c_str(), sendToServer.size(), 0);
+    recv(commandChannel, readFromServer, sizeof(readFromServer), 0);
+    printList(readFromServer);
+}
+
+void Client::infoReq(string request){
+    string sendToServer;
+    char readFromServer[1024];
+    sendToServer = INFO + generateRandomString() + "4" + request.substr(5, request.size());
+    send(commandChannel, sendToServer.c_str(), sendToServer.size(), 0);
+    recv(commandChannel, readFromServer, sizeof(readFromServer), 0);
+    if(string(readFromServer).find(" ") == string::npos){
+        cout << "-Payload is empty\n";
+    }
+    else{
+        printList(readFromServer);
+    }
+}
+
+void Client::receiveReq(string request){
+    string sendToServer;
+    char readFromServer[1024];
+    sendToServer = RECEIVE + generateRandomString() + "2";
+    send(commandChannel, sendToServer.c_str(), sendToServer.size(), 0);
+    recv(commandChannel, readFromServer, sizeof(readFromServer), 0);
+    vector<string>splitted =  split(readFromServer);
+    if(splitted.size() == 0 && string(readFromServer).back() == '0'){
+        cout << "-Payload is empty\n";
+    }
+    else{
+        for(int i = 0; i < splitted.size() - 1; i += 2)
+            cout << "- " << splitted[i] << ": " << splitted[i + 1] << "\n";
+    }
+}
+
+void Client::sendReq(string request){
+    string sendToServer;
+    char readFromServer[1024];
+    vector<string> splitted = split(request);
+    int messageLen = 4 + splitted[1].size();
+    sendToServer = (SEND + generateRandomString() + to_string(messageLen)  + " " + splitted[0] + " " + splitted[1]);
+    send(commandChannel, sendToServer.c_str(), sendToServer.size(), 0);
+    recv(commandChannel, readFromServer, sizeof(readFromServer), 0);
+    if(string(readFromServer).back() == '1'){
+        cout << "success\n";
+    }            
+    else{
+        cout << "failure\n";
+    }
+}
+
+void Client::quitReq(){
+    string sendToServer = QUITCOMMAND;
+    char readFromServer[1024];
+    
+    send(commandChannel, sendToServer.c_str(), sendToServer.size(), 0);
+    recv(commandChannel, readFromServer, sizeof(readFromServer), 0);
+    cout << readFromServer << "\n";
+}
+
 void Client::run()
 {
     string request;    
-    string sendToServer;
-    char readFromServer[1024];
     
     while(getline(cin, request)) 
     {
+        if(request == QUITCOMMAND){
+            quitReq();
+        }
+
         if(request == LISTCOMMAND){
-            sendToServer = LIST + generateRandomString() + "2";
-            send(commandChannel, sendToServer.c_str(), sendToServer.size(), 0);
-            recv(commandChannel, readFromServer, sizeof(readFromServer), 0);
-            printList(readFromServer);
+            listReq(request);
         }
 
         else if(request.substr(0, 4) == INFOCOMMAND){
-            sendToServer = INFO + generateRandomString() + "4" + request.substr(5, request.size());
-            send(commandChannel, sendToServer.c_str(), sendToServer.size(), 0);
-            recv(commandChannel, readFromServer, sizeof(readFromServer), 0);
-            if(string(readFromServer).find(" ") == string::npos){
-                cout << "-Payload is empty\n";
-            }
-            else{
-                printList(readFromServer);
-            }
-
+            infoReq(request);
         }
 
         else if(request == RECEIVECOMMAND){
-            sendToServer = RECEIVE + generateRandomString() + "2";
-            send(commandChannel, sendToServer.c_str(), sendToServer.size(), 0);
-            recv(commandChannel, readFromServer, sizeof(readFromServer), 0);
-            vector<string>splitted =  split(readFromServer);
-            if(splitted.size() == 0 && string(readFromServer).back() == '0'){
-                cout << "-Payload is empty\n";
-            }
-            else{
-                for(int i = 0; i < splitted.size() - 1; i += 2)
-                    cout << "- " << splitted[i] << ": " << splitted[i + 1] << "\n";
-            }
+            receiveReq(request);
         }
 
-
         else if(request.substr(0, 4) == SENDCOMMAND){
-            vector<string> splitted = split(request);
-            int messageLen = 4 + splitted[1].size();
-            sendToServer = (SEND + generateRandomString() + to_string(messageLen)  + " " + splitted[0] + " " + splitted[1]);
-            send(commandChannel, sendToServer.c_str(), sendToServer.size(), 0);
-            recv(commandChannel, readFromServer, sizeof(readFromServer), 0);
-            if(string(readFromServer).back() == '1'){
-                cout << "success\n";
-            }            
-            else{
-                cout << "failure\n";
-            }
+            sendReq(request);
         }
 
 

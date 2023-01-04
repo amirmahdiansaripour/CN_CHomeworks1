@@ -22,25 +22,20 @@ void Client::sendInitData(){
     // cout << "commandChannel: \n" << readFromServer << "\n";
 }
 
-vector<string> getNames(string unsplitted){
-    
+vector<string> split(string unsplitted){    
     stringstream ss(unsplitted);
- 
     vector<string> v;
- 
     while (getline(ss, unsplitted, ' ')) {
         v.push_back(unsplitted);
     }
     vector<string>::iterator it;
-  
     it = v.begin();
     v.erase(it);
-
     return v;
 }
 
 void printList(string readFromServer){
-    vector<string> splittedData = getNames(readFromServer);
+    vector<string> splittedData = split(readFromServer);
     for(string s : splittedData)
     cout << "- " << s << "\n";    
 }
@@ -57,6 +52,7 @@ void Client::run()
     string request;    
     string sendToClient;
     char readFromServer[1024];
+    
     while(getline(cin, request)) 
     {
         if(request == LISTCOMMAND){
@@ -79,6 +75,20 @@ void Client::run()
 
         }
 
+
+        else if(request.substr(0, 4) == SENDCOMMAND){
+            vector<string> splitted = split(request);
+            int messageLen = 4 + splitted[1].size();
+            sendToClient = (SEND + generateRandomString() + to_string(messageLen)  + " " + splitted[0] + " " + splitted[1]);
+            send(commandChannel, sendToClient.c_str(), sendToClient.size(), 0);
+            recv(commandChannel, readFromServer, sizeof(readFromServer), 0);
+            if(string(readFromServer).back() == '1'){
+                cout << "success\n";
+            }            
+            else{
+                cout << "failure\n";
+            }
+        }
 
 
 

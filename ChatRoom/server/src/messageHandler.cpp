@@ -7,11 +7,19 @@ using namespace std;
 MessageHandler::MessageHandler(){
 }
 
-vector<User*> MessageHandler::getUsers(){
-    return users;
-}
-
 // These two functions may change in the future
+
+vector<string> split(string unsplitted){    
+    stringstream ss(unsplitted);
+    vector<string> v;
+    while (getline(ss, unsplitted, ' ')) {
+        v.push_back(unsplitted);
+    }
+    vector<string>::iterator it;
+    it = v.begin();
+    v.erase(it);
+    return v;
+}
 
 string getPayLoad(string in){
     int charIndex = in.size() - 1;
@@ -35,10 +43,11 @@ string getUserIDInfoReq(string req){
 
 /////////////////////
 
-string MessageHandler::handle(string request){
+string MessageHandler::handle(string request, int clientFd_){
     string reqType = request.substr(0, 4);
+    clientFd = clientFd_;
     if(reqType == CONNECT){
-        return handleConnectReq(request);
+        return handleConnectReq(request, clientFd_);
 
     }
     else if(reqType == LIST){
@@ -49,6 +58,11 @@ string MessageHandler::handle(string request){
         return handleInfo(request);
     }
 
+    else if(reqType == SEND){
+        vector<string> splitted = split(request);
+        return handleSend(splitted);
+    }
+
     else{
         return "Wrong input\n";
     }
@@ -56,10 +70,18 @@ string MessageHandler::handle(string request){
 }
 
 
-string MessageHandler::handleConnectReq(string req){
+string MessageHandler::findSender(){
+    for(User* u : users){
+        if(u->getChannel() == clientFd){
+            return u->getName();
+        }
+    }
+}
+
+string MessageHandler::handleConnectReq(string req, int clientFd){
     string userName = getPayLoad(req);
-    // cout << "user: " << userName << "\n";
-    User* newUser = new User(userName, users.size());
+    // cout << "user:" << userName << "\n";
+    User* newUser = new User(userName, users.size(), clientFd);
     users.push_back(newUser);
     
     return CONNACK + generateRandomString() + "2";
@@ -83,7 +105,6 @@ string MessageHandler::handleListReq(){
 
 string MessageHandler::handleInfo(string request){
     int demandedID = stoi(getUserIDInfoReq(request));
-
     string res = INFOREPLY + generateRandomString();
 
     if(demandedID >= users.size())
@@ -95,6 +116,22 @@ string MessageHandler::handleInfo(string request){
         res += to_string(messageLen);
         res += (" " + demandedName);
     }
+    return res;
+}
 
+
+typedef struct SendContent SendContent;
+
+string MessageHandler::handleSend(vector<string>args){
+    string receiverName = args[0];
+    int status = 0;
+    string res;
+    for(User* u : users){
+        if(u->getName() == receiverName){
+            u->addToArchive(findSender() + " : " + args[1]);
+            status = 1;
+        }
+    }
+    res = SENDREPLY + generateRandomString() + "3" + to_string(status);
     return res;
 }

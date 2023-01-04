@@ -33,18 +33,13 @@ void* handleConnection(void* thread){
         bool dchanel;
         if(recv(currArg->clientChannel, readClient, sizeof(readClient), 0) > 0){
             cout << "Client: " << string(readClient) << "\n";
-            sendClient = messageHandler->handle(string(readClient));
+            sendClient = messageHandler->handle(string(readClient), currArg->clientChannel);
             cout << "Response: " << sendClient << "\n";
-
-
-
-
+            send(currArg->clientChannel, sendClient.c_str(), sizeof(readClient), 0);
         }
         else{
             error("ERROR: could not receive from client\n");
         }
-        send(currArg->clientChannel, sendClient.c_str(), sizeof(readClient), 0);
-        
     }
 
 }

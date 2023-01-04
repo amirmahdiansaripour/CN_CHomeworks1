@@ -9,9 +9,7 @@ void error(const char *msg){
     exit(0);
 }
 
-Server::Server(int port_){
-    port = port_;
-
+Server::Server(){
 }
 
 struct threadArg{
@@ -56,12 +54,12 @@ void* handleConnection(void* thread){
 }
 
 void Server::run(){
-    int fd = setupServer(port);
+    int fd = setupServer(PORT);
     pthread_t threads[MAX_CLIENTS];  
     threadArg clientArg[MAX_CLIENTS];
     int numOfThreads = 0;
     while (true){
-        int commandFd = acceptClient(port);
+        int commandFd = acceptClient(fd);
         
         if(commandFd == -1)
             error("ERROR: could not accept client\n");

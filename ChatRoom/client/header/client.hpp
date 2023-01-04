@@ -8,10 +8,11 @@
 #include <sys/time.h>
 #include <netinet/in.h>
 
+const int PORT = 8080;
 
 class Client{
 public:
-    Client(int);
+    Client();
     void run();
     int connectServer(int);
 

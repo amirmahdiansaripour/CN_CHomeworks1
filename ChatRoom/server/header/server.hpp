@@ -14,9 +14,11 @@
 
 #define MAX_CLIENTS 10
 
+const int PORT = 8080;
+
 class Server{
 public:
-    Server(int);
+    Server();
     void run();
     int setupServer(int);
     int acceptClient(int);

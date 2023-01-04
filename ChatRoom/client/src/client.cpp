@@ -8,15 +8,14 @@ void error(const char *msg){
 }
 
 
-Client::Client(int port_){
-    port = port_;
+Client::Client(){
 }
 
 void Client::run()
 {
     string request;    
     
-    int commandChannel = connectServer(port);
+    int commandChannel = connectServer(PORT);
     char readFromServer[1024];
     while(getline(cin, request)) 
     {

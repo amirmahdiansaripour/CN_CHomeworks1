@@ -3,6 +3,7 @@
 using namespace std;
 
 int main(int argc, char* argv[]){
-    Server server = Server(stoi(argv[1]));
+    // cout << stoi(argv[1]) << "\n";
+    Server server = Server();
     server.run();
 }

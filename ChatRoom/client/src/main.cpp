@@ -3,6 +3,6 @@
 using namespace std;
 
 int main(int argc, char* argv[]){
-    Client client = Client(stoi(argv[1]));
+    Client client = Client();
     client.run();
 }

@@ -17,6 +17,8 @@ const std::string INFO      = "0101";      //5
 const std::string INFOREPLY = "0110";      //6
 const std::string SEND      = "0111";      //7
 const std::string SENDREPLY = "1000";      //8  
+const std::string RECEIVE   = "1001";      //9
+const std::string RECEIVEREPLY = "1010";   //10
 
 class MessageHandler{
 public:
@@ -27,7 +29,8 @@ public:
     std::string handleListReq();
     std::string handleInfo(std::string);
     std::string handleSend(std::vector<std::string>);
-    std::string findSender();
+    User* findSender();
+    std::string handleReceive();
 private:
     std::vector<User*> users;
     int clientFd;

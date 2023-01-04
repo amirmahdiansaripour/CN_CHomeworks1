@@ -16,8 +16,13 @@ int User::getID(){
     return id;
 }
 
-void User::addToArchive(string message){
-    archiveMessages.push_back(message);
+void User::addToArchive(vector<string> message){
+    archiveMessages.push_back(message[0]);
+    archiveMessages.push_back(message[1]);
+}
+
+vector<string> User::getArchivedMessages(){
+    return archiveMessages;
 }
 
 string User::getName(){

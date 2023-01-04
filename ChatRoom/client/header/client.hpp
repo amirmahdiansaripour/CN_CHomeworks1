@@ -13,14 +13,16 @@
 const std::vector<std::string> messageID = {"0000", "0001", "0010", "0011", "0100", "0101", "0110", "0111", "1000", "1001", "1010", "1011", "1100", "1101", 
 "1110", "1111"};
 
-const std::string LISTCOMMAND = "list";
-const std::string INFOCOMMAND = "info";
-const std::string SENDCOMMAND = "send";
+const std::string LISTCOMMAND       = "list";
+const std::string INFOCOMMAND       = "info";
+const std::string SENDCOMMAND       = "send";
+const std::string RECEIVECOMMAND    = "receive";
 
-const std::string CONNECT   = "0001";
+const std::string CONNECT   = "0001";      //1
 const std::string LIST      = "0011";      //3
 const std::string INFO      = "0101";      //5
 const std::string SEND      = "0111";      //7
+const std::string RECEIVE   = "1001";      //9
 
 class Client{
 public:

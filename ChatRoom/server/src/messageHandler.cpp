@@ -63,6 +63,10 @@ string MessageHandler::handle(string request, int clientFd_){
         return handleSend(splitted);
     }
 
+    else if(reqType == RECEIVE){
+        return handleReceive();
+    }
+
     else{
         return "Wrong input\n";
     }
@@ -70,10 +74,10 @@ string MessageHandler::handle(string request, int clientFd_){
 }
 
 
-string MessageHandler::findSender(){
+User* MessageHandler::findSender(){
     for(User* u : users){
         if(u->getChannel() == clientFd){
-            return u->getName();
+            return u;
         }
     }
 }
@@ -119,19 +123,34 @@ string MessageHandler::handleInfo(string request){
     return res;
 }
 
-
-typedef struct SendContent SendContent;
-
 string MessageHandler::handleSend(vector<string>args){
     string receiverName = args[0];
     int status = 0;
     string res;
     for(User* u : users){
         if(u->getName() == receiverName){
-            u->addToArchive(findSender() + " : " + args[1]);
+            u->addToArchive({findSender()->getName(), args[1]});
             status = 1;
         }
     }
     res = SENDREPLY + generateRandomString() + "3" + to_string(status);
     return res;
+}
+
+string MessageHandler::handleReceive(){
+    vector<string> archiveMessages = findSender()->getArchivedMessages();
+    string res;
+    int messageLen = 2;
+    for(int i = 0; i < archiveMessages.size(); i++){
+        res += (archiveMessages[i] + " ");
+        if(i % 2 == 1){
+            messageLen += archiveMessages[i].size();
+        }
+    }
+    if(archiveMessages.size() > 0){
+        return RECEIVEREPLY + generateRandomString() + to_string(messageLen) + " " + res;
+    }
+    else{
+        return RECEIVEREPLY + generateRandomString() + to_string(messageLen) + "0";
+    }
 }

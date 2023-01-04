@@ -9,8 +9,9 @@ public:
     User(std::string, int, int);
     int getID();
     int getChannel();
-    void addToArchive(std::string);
+    void addToArchive(std::vector<std::string>);
     std::string getName();
+    std::vector<std::string> getArchivedMessages();
 private:
 
     std::string name;

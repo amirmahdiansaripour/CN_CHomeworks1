@@ -1,6 +1,7 @@
 
 #include "../header/server.hpp"
-
+#include "../header/messageHandler.hpp"
+#include "../header/user.hpp"
 
 using namespace std;
 
@@ -17,12 +18,13 @@ struct threadArg{
 }arg;
 
 
+vector<User*> usersTosend;
+
 void* handleConnection(void* thread){
     threadArg *currArg = (threadArg *) thread;
     //  cerr << "argument commandFd " << currArg->commandChannel << "\n";
     //  cerr << "argument datafd" << currArg->dataChannel << "\n";
-    // MessageHandler* messageHandler = new MessageHandler(usersTosend, adminFilesToSend);
-    // cout << messageHandler->usersFromServer.size() << "gg\n";
+    MessageHandler* messageHandler = new MessageHandler(usersTosend);
     char readClient[1024];
     string sendClient;
     while(true){
@@ -31,14 +33,13 @@ void* handleConnection(void* thread){
         bool dchanel;
         if(recv(currArg->commandChannel, readClient, sizeof(readClient), 0) > 0){
             cout << string(readClient) << " receive check\n";
-            // sendClient = messageHandler->handle(string(readClient));
-            // dchanel = needDataChannel(sendClient);
+            sendClient = messageHandler->handle(string(readClient));
         }
-        // else{
-        //     error("ERROR: could not receive from client\n");
-        // }
-        // if(!dchanel){   // no need for data channel
-        //     send(currArg->commandChannel, sendClient.c_str(), sizeof(readClient), 0);
+        else{
+            error("ERROR: could not receive from client\n");
+        }
+        send(currArg->commandChannel, sendClient.c_str(), sizeof(readClient), 0);
+        
         // }
         // else{
         //     vector<string> commandAndDataChannel = splitCommandData(sendClient);

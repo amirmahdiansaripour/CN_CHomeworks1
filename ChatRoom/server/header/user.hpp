@@ -6,7 +6,8 @@
 class User{
 public:
     User(std::string, int);
-
+    int getID();
+    std::string getName();
 private:
 
     std::string name;

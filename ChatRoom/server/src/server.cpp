@@ -35,6 +35,16 @@ void* handleConnection(void* thread){
         if(recv(currArg->clientChannel, readClient, sizeof(readClient), 0) > 0){
             cout << string(readClient) << " receive check\n";
             sendClient = messageHandler->handle(string(readClient));
+
+
+
+            if(string(readClient).substr(0, 4) == "0001"){  //update users
+                usersTosend = messageHandler->getUsers();
+            }
+
+
+
+
         }
         else{
             error("ERROR: could not receive from client\n");

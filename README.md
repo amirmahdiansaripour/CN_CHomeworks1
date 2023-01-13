@@ -10,9 +10,8 @@ It is a server in which multiple clients can connect and send requires to. Each 
 
 3) messageHandler: This sub-module gets each request from the server and fragments it into substrings (handle method). The substrings are then processed, and the type of request with its arguments are detected. Finally, the request's response is provided through handle functions (handleDownload, handleQuit, and so on) and sent back to the server.
 
-![readme1] ![1-1](https://user-images.githubusercontent.com/92050925/212424480-6e0cd689-182c-45a4-acc9-0e42e3033899.png)
+![readme1] ![1-1](https://user-images.githubusercontent.com/92050925/212425098-800f6766-d97b-43c2-8008-031ca9a67d08.png)
 
-4) 
 
 
 2: Web Server

@@ -19,13 +19,12 @@ set val(nn)             9                          	;# number of mobilenodes
 set val(rp)             AODV                       	;# routing protocol
 set val(x)        		500							;# in meters
 set val(y)        		500							;# in meters
-set val(finish)         100.0               		;# finish time
+set val(finish)         100                 		;# finish time
 set ns [new Simulator]
 
 set throughput4 [open throughput4.tr w]
 set throughput5 [open throughput5.tr w]
 set throughput6 [open throughput6.tr w]
-# set throughput8 [open throughput8.tr w]
 
 
 $ns use-newtrace
@@ -185,15 +184,15 @@ $cbr3_5 attach-agent $tcp3_5
 $cbr3_6 attach-agent $tcp3_6
 
 
-$ns at 0.0 "initNetwork"
-$ns at 0.0 "$cbr0_3 start"
-$ns at 0.0 "$cbr1_3 start"
-$ns at 0.0 "$cbr2_3 start"
-$ns at 0.0 "$cbr3_4 start"
-$ns at 0.0 "$cbr3_5 start"
-$ns at 0.0 "$cbr3_6 start"
+$ns at 0 "initNetwork"
+$ns at 0 "$cbr0_3 start"
+$ns at 0 "$cbr1_3 start"
+$ns at 0 "$cbr2_3 start"
+$ns at 0 "$cbr3_4 start"
+$ns at 0 "$cbr3_5 start"
+$ns at 0 "$cbr3_6 start"
 
-set time 1.0
+set time 1
 
 
 proc initNetwork {} {

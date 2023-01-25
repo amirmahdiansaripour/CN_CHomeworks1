@@ -3,23 +3,24 @@ if { $argc != 3 } {
 	abort()
 }
 set error_rate [lindex $argv 0]
-set bandwidth [lindex $argv 1].Mb
-set packet_size [lindex $argv 2].Kb
+set packet_size [lindex $argv 1]Kb
+set bandwidth [lindex $argv 2]Mb
+
 # defining constants
 
-set val(chan)           Channel/WirelessChannel    	;# Type of channel
-set val(prop)           Propagation/TwoRayGround   	;# Radio model (propagation)
-set val(netif)          Phy/WirelessPhy            	;# NIC (Interface Card)
-set val(mac)            Mac/802_11                 	;# Medium Access Control (MAC)
-set val(ifq)            Queue/DropTail/PriQueue    	;# Type of queuing interface
-set val(ll)             LL                         	;# link layer type
-set val(ant)            Antenna/OmniAntenna        	;# Antenna Model
-set val(ifqlen)         50                         	;# max packet in interface queue
-set val(nn)             9                          	;# number of mobilenodes
+set val(chan)           Channel/WirelessChannel    	;
+set val(prop)           Propagation/TwoRayGround   	;
+set val(netif)          Phy/WirelessPhy            	;
+set val(mac)            Mac/802_11                 	;#MAC protocole
+set val(ifq)            Queue/DropTail/PriQueue    	;
+set val(ll)             LL                         	;
+set val(ant)            Antenna/OmniAntenna        	;
+set val(ifqlen)         50                         	;
+set val(nn)             9                          	;
 set val(rp)             AODV                       	;# routing protocol
-set val(x)        		500							;# in meters
-set val(y)        		500							;# in meters
-set val(finish)         100                 		;# finish time
+set val(x)        		500							;
+set val(y)        		500							;
+set val(finish)         100                 		;
 set ns [new Simulator]
 
 set throughput4 [open throughput4.tr w]
@@ -208,7 +209,7 @@ proc initNetwork {} {
 
 proc handleSink {} {
     global sink3_4 sink3_5 sink3_6
-    global throughput4 throughput5 throughput6 time ns packet_size
+    global throughput4 throughput5 throughput6 time ns
 
     set link3_4 [$sink3_4 set bytes_]
     set link3_5 [$sink3_5 set bytes_]

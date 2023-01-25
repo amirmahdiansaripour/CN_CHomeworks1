@@ -22,9 +22,9 @@ set val(y)        		500							;# in meters
 set val(finish)         100.0               		;# finish time
 set ns [new Simulator]
 
+set throughput4 [open throughput4.tr w]
 set throughput5 [open throughput5.tr w]
-# set throughput6 [open throughput6.tr w]
-# set throughput7 [open throughput7.tr w]
+set throughput6 [open throughput6.tr w]
 # set throughput8 [open throughput8.tr w]
 
 
@@ -122,87 +122,127 @@ $n6 set Y_ 180.0
 $n6 set Z_ 0.0
 
 #TCP connections
-set tcp0_3 [new Agent/TCP]
-set tcp1_3 [new Agent/TCP]
-set tcp2_3 [new Agent/TCP]
-set tcp3_3 [new Agent/TCP]
+set udp0_3 [new Agent/UDP]
+set udp1_3 [new Agent/UDP]
+set udp2_3 [new Agent/UDP]
 
-set sink0_3 [new Agent/TCPSink]
-set sink1_3 [new Agent/TCPSink]
-set sink2_3 [new Agent/TCPSink]
+set balancer0_3 [new Agent/Null]
+set balancer1_3 [new Agent/Null]
+set balancer2_3 [new Agent/Null]
 
-$tcp0_3 set packetSize_ $packet_size.Kb
-$tcp1_3 set packetSize_ $packet_size.Kb
-$tcp2_3 set packetSize_ $packet_size.Kb
+$udp0_3 set packetSize_ $packet_size.Kb
+$udp1_3 set packetSize_ $packet_size.Kb
+$udp2_3 set packetSize_ $packet_size.Kb
 
-$ns attach-agent $n0 $tcp0_3
-$ns attach-agent $n1 $tcp1_3
-$ns attach-agent $n2 $tcp2_3
+$ns attach-agent $n0 $udp0_3
+$ns attach-agent $n1 $udp1_3
+$ns attach-agent $n2 $udp2_3
+$ns attach-agent $n3 $balancer0_3
+$ns attach-agent $n3 $balancer1_3
+$ns attach-agent $n3 $balancer2_3
 
-$ns attach-agent $n3 $sink0_3
-$ns attach-agent $n3 $sink1_3
-$ns attach-agent $n3 $sink2_3
-
-$ns connect $tcp0_3 $sink0_3
-$ns connect $tcp1_3 $sink1_3
-$ns connect $tcp2_3 $sink2_3
+$ns connect $udp0_3 $balancer0_3
+$ns connect $udp1_3 $balancer1_3
+$ns connect $udp2_3 $balancer2_3
 
 set cbr0_3 [new Application/Traffic/CBR]
 set cbr1_3 [new Application/Traffic/CBR]
 set cbr2_3 [new Application/Traffic/CBR]
-set cbr3_3 [new Application/Traffic/CBR]
 
-$cbr0_3 attach-agent $tcp0_3
-$cbr1_3 attach-agent $tcp1_3
-$cbr2_3 attach-agent $tcp2_3
+$cbr0_3 attach-agent $udp0_3
+$cbr1_3 attach-agent $udp1_3
+$cbr2_3 attach-agent $udp2_3
+
+## UDP part
+set tcp3_4 [new Agent/TCP]
+set tcp3_5 [new Agent/TCP]
+set tcp3_6 [new Agent/TCP]
+set sink3_4 [new Agent/TCPSink]
+set sink3_5 [new Agent/TCPSink]
+set sink3_6 [new Agent/TCPSink]
+
+$tcp3_4 set packetSize_ $packet_size.Kb
+$tcp3_5 set packetSize_ $packet_size.Kb
+$tcp3_6 set packetSize_ $packet_size.Kb
+
+$ns attach-agent $n3 $tcp3_4
+$ns attach-agent $n3 $tcp3_5
+$ns attach-agent $n3 $tcp3_6
+$ns attach-agent $n4 $sink3_4
+$ns attach-agent $n5 $sink3_5
+$ns attach-agent $n6 $sink3_6
+
+$ns connect $tcp3_4 $sink3_4
+$ns connect $tcp3_5 $sink3_5
+$ns connect $tcp3_6 $sink3_6
+
+set cbr3_4 [new Application/Traffic/CBR]
+set cbr3_5 [new Application/Traffic/CBR]
+set cbr3_6 [new Application/Traffic/CBR]
+
+$cbr3_4 attach-agent $tcp3_4
+$cbr3_5 attach-agent $tcp3_5
+$cbr3_6 attach-agent $tcp3_6
+
 
 $ns at 0.0 "initNetwork"
 $ns at 0.0 "$cbr0_3 start"
 $ns at 0.0 "$cbr1_3 start"
 $ns at 0.0 "$cbr2_3 start"
+$ns at 0.0 "$cbr3_4 start"
+$ns at 0.0 "$cbr3_5 start"
+$ns at 0.0 "$cbr3_6 start"
 
 set time 1.0
 
+
 proc initNetwork {} {
-    global sink0_3 sink1_3 sink2_3 ns time
+    global sink3_4 sink3_5 sink3_6 ns time
     #Initialize sinks
-    $sink0_3 set bytes_ 0
-    $sink1_3 set bytes_ 0
-    $sink2_3 set bytes_ 0
+    $sink3_4 set bytes_ 0
+    $sink3_5 set bytes_ 0
+    $sink3_6 set bytes_ 0
     
     set currTime [$ns now]
     $ns at [expr $currTime+$time] "handleSink"
 }
 
 proc handleSink {} {
-    global sink0_3 sink1_3 sink2_3
-    global throughput5 time ns packet_size
-    # global throughput5 throughput6 throughput7 throughput8 time ns packet_size
+    global sink3_4 sink3_5 sink3_6
+    global throughput4 throughput5 throughput6 time ns packet_size
 
-    set link0_3 [$sink0_3 set bytes_]
-    set link1_3 [$sink1_3 set bytes_]
-    set link2_3 [$sink2_3 set bytes_]
+    set link3_4 [$sink3_4 set bytes_]
+    set link3_5 [$sink3_5 set bytes_]
+    set link3_6 [$sink3_6 set bytes_]
     
     set currTime [$ns now]
     # The load on sink
-    set load3 [expr ($link0_3*8)/$time + ($link1_3*8)/$time + ($link2_3*8)/$time]
+    set load4 [expr ($link3_4*8)/$time]
+    set load5 [expr ($link3_5*8)/$time]
+    set load6 [expr ($link3_6*8)/$time]
 
-    puts $throughput5 "$currTime [expr $load3]"
-    $sink0_3 set bytes_ 0
-    $sink1_3 set bytes_ 0
-    $sink2_3 set bytes_ 0
+    puts $throughput4 "$currTime [expr $load4]"
+    puts $throughput5 "$currTime [expr $load5]"
+    puts $throughput6 "$currTime [expr $load6]"
+    
+    $sink3_4 set bytes_ 0
+    $sink3_5 set bytes_ 0
+    $sink3_6 set bytes_ 0
     # Repeat the process till time = 100
     $ns at [expr $currTime+$time] "handleSink"
 }
 
 proc finish {} {
-    global ns tracefd namfile throughput5
+    global ns tracefd namfile throughput4 throughput5 throughput6
     $ns flush-trace
 
     close $namfile
     close $tracefd
 
+    close $throughput4
     close $throughput5
+    close $throughput6
+    
     exit 0
 }
 

@@ -137,3 +137,28 @@ $n7 set Z_ 0.0
 $n8 set X_ 200.0
 $n8 set Y_ 180.0
 $n8 set Z_ 0.0
+
+set tcp0_4 [new Agent/TCP]
+set tcp1_4 [new Agent/TCP]
+set tcp2_4 [new Agent/TCP]
+set tcp3_4 [new Agent/TCP]
+
+set sink0_4 [new Agent/TCPSink]
+set sink1_4 [new Agent/TCPSink]
+set sink2_4 [new Agent/TCPSink]
+set sink3_4 [new Agent/TCPSink]
+
+$ns attach-agent $n0 $tcp0_4
+$ns attach-agent $n1 $tcp1_4
+$ns attach-agent $n2 $tcp2_4
+$ns attach-agent $n3 $tcp3_4
+
+$ns attach-agent $n4 $sink0_4
+$ns attach-agent $n4 $sink1_4
+$ns attach-agent $n4 $sink2_4
+$ns attach-agent $n4 $sink3_4
+
+$ns connect $tcp0_4 $sink0_4
+$ns connect $tcp1_4 $sink1_4
+$ns connect $tcp4_4 $sink2_4
+$ns connect $tcp3_4 $sink3_4

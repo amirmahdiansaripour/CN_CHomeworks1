@@ -1,10 +1,9 @@
-if { $argc != 3 } {
+if { $argc != 2 } {
 	puts "Enter error rate, bandwidth, and pacet_size"
 	abort()
 }
 set error_rate [lindex $argv 0]
-set packet_size [lindex $argv 1]Kb
-set bandwidth [lindex $argv 2]Mb
+set bandwidth [lindex $argv 1]Mb
 
 # defining constants
 
@@ -22,6 +21,8 @@ set val(x)        		500							;
 set val(y)        		500							;
 set val(finish)         100                 		;
 set ns [new Simulator]
+set packet_size 100Kb
+
 
 set throughput4 [open throughput4.tr w]
 set throughput5 [open throughput5.tr w]

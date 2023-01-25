@@ -23,9 +23,9 @@ set val(finish)         100.0               		;# finish time
 set ns [new Simulator]
 
 set throughput5 [open throughput5.tr w]
-set throughput6 [open throughput6.tr w]
-set throughput7 [open throughput7.tr w]
-set throughput8 [open throughput8.tr w]
+# set throughput6 [open throughput6.tr w]
+# set throughput7 [open throughput7.tr w]
+# set throughput8 [open throughput8.tr w]
 
 
 $ns use-newtrace
@@ -173,10 +173,10 @@ $ns at 0.0 "$cbr1_4 start"
 $ns at 0.0 "$cbr2_4 start"
 $ns at 0.0 "$cbr3_4 start"
 
-set counter = 1.0
+set time 1.0
 
-proc initNetwork{} {
-    global sink0_4 sink1_4 sink2_4 sink3_4 ns counter
+proc initNetwork {} {
+    global sink0_4 sink1_4 sink2_4 sink3_4 ns time
     #Initialize sinks
     $sink0_4 set bytes_ 0
     $sink1_4 set bytes_ 0
@@ -185,11 +185,44 @@ proc initNetwork{} {
 
 
 
-    set current [$ns current]
-    $ns at [expr $now+$counter] "handleSinks"
+    set currTime [$ns now]
+    $ns at [expr $currTime+$time] "handleSink"
 }
 
-proc record{} {
+proc handleSink {} {
     global sink0_4 sink1_4 sink2_4 sink3_4
-    global 
+    global throughput5 time ns packet_size
+    # global throughput5 throughput6 throughput7 throughput8 time ns packet_size
+
+    set link0_4 [$sink0_4 set bytes_]
+    set link1_4 [$sink1_4 set bytes_]
+    set link2_4 [$sink2_4 set bytes_]
+    set link3_4 [$sink3_4 set bytes_]
+
+    set currTime [$ns now]
+    # The load on sink
+    set load4 [expr ($link0_4*8)/$time + ($link1_4*8)/$time + ($link2_4*8)/$time + ($link3_4*8)/$time]
+
+    puts $throughput5 "$currTime [expr $load4]"
+    $sink0_4 set bytes_ 0
+    $sink1_4 set bytes_ 0
+    $sink2_4 set bytes_ 0
+    $sink3_4 set bytes_ 0
+    # Repeat the process till time = 100
+    $ns at [expr $currTime+$time] "handleSink"
 }
+
+proc finish {} {
+    global ns tracefd namfile throughput5
+    $ns flush-trace
+
+    close $namfile
+    close $tracefd
+
+    close $throughput5
+    exit 0
+}
+
+$ns at $val(finish) "finish"
+
+$ns run

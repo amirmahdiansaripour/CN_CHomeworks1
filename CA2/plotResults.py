@@ -12,6 +12,9 @@ class Parser:
         self.th4 = "throughput4.tr"
         self.th5 = "throughput5.tr"
         self.th6 ="throughput6.tr"
+        self.packetPattern = '^([srd]) -t ([0-9]*[.]?[0-9]*) .*-Hs (\d+) .*-Ii (\d+) .*'
+        self.tcpPattern = '^[dsr].*-It tcp.*'
+        self.packetCount = 0
         return
 
 
@@ -47,7 +50,7 @@ class Parser:
     # yLabel = through4[:, 1]
     # xLabel = through4[:, 0]    
 
-    def checkStatus(self, whichPacketErrored, packetCount, 
+    def checkStatus(self, whichPacketErrored, 
     resultMatched, sentTimes, retransmittedPackets, arrivalTimes):
         status = resultMatched.group(1)
         time = resultMatched.group(2)
@@ -58,10 +61,10 @@ class Parser:
             if re.search('[3]', hs):  # sender should be 3
                 if uid not in sentTimes:
                     sentTimes[uid] = time  # packet is sent now!
-                    packetCount += 1
-            if packetCount == whichPacketErrored: 
+                    self.packetCount += 1
+            if self.packetCount == whichPacketErrored: 
                 retransmittedPackets.append(uid)
-                packetCount = 0
+                self.packetCount = 0
                 
         elif status == 'r':
             if uid in sentTimes:
@@ -84,14 +87,14 @@ class Parser:
         for row in openTRFile:
             data.append(str(row))
         for pattern in row:
-            if re.search('^[dsr].*-It tcp.*', pattern):
+            if re.search(self.tcpPattern, pattern):
                 data.append(pattern)
         # print("Data Len: " , len(data))
-        packetCount = 0
+        self.packetCount = 0
         for line in data:
-            resultMatched = re.search('^([srd]) -t ([0-9]*[.]?[0-9]*) .*-Hs (\d+) .*-Ii (\d+) .*', line)
+            resultMatched = re.search(self.packetPattern, line)
             if not resultMatched: continue
-            self.checkStatus(whichPacketErrored, packetCount, resultMatched, 
+            self.checkStatus(whichPacketErrored, resultMatched, 
             sentTimes, retransmittedPackets, arrivalTimes)
         return sum(arrivalTimes.values()) / len(arrivalTimes)
 

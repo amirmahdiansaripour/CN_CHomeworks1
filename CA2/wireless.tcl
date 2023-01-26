@@ -46,6 +46,14 @@ $topo load_flatgrid $val(x) $val(y)
 create-god $val(nn)
 set channel1 [new $val(chan)]
 
+proc HandleErrorRate {} {
+    global  error_rate
+    set errorModel [new ErrorModel]
+    $errorModel unit packet;
+    $errorModel set rate_ $error_rate
+    return $errorModel
+}
+
 # defining node
 $ns node-config -adhocRouting $val(rp) \
 			 	-llType $val(ll) \
@@ -61,7 +69,8 @@ $ns node-config -adhocRouting $val(rp) \
 			 	-routerTrace ON \
 			 	-movementTrace ON \
 			 	-channel $channel1\
-                
+                -IncomingErrProc HandleErrorRate
+
 #set nodes
 set n0 [$ns node]
 set n1 [$ns node]

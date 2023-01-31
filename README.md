@@ -54,3 +54,43 @@ Open localhost:"port number"/ in a browser
 For example:
   ```./Server.out 127.0.0.1:4000```
    http://localhost:4000
+
+
+3: CHAT_ROOM
+
+Multiple clients can chat with each other through connecting to a central server which keeps their names, ids, and archived messages. The most important modules are:
+
+1) Client: Clients can send some commands to the server and get the results. The commands are: 
+CONNECT: At the beginning of the connection, a packet containing this command is sent to server, and the server responds with CONNACK.
+LIST: Through this command, the client can see other clients whom he can chat with. Its feedback is LISTREPLY.
+SEND: A client can send a message to another person connected to the server via this command. Its feedback is SENDREPLY (stating wheter the message has been received by the server or not).
+INFO: This command takes one argument, the id of a user. If that user is present, the response will be his name; otherwise, the payload will be empty.
+RECEIVE: This command is used when a user wants to figure out wheter other users have sent him any messages or not. By sending this command, the user's archived messages from other people will be shown to him.
+
+2) Server: The core module which receives messages from different clients and handles them. All the responses mentioned in the previous section are provided by this module.
+
+3) MessageHandler: A submodule in the server which provides the server with the final string that should be sent to client.
+
+4) User: A simulation of real clients in the server, each of which has a name, an id, and a channel.
+
+HOW TO RUN:
+Run the following commands for client and server in the respective terminals: 
+```make```
+
+```./Server.out <port>```
+
+```make```
+
+```./Client.out localhost:<port> <name>```
+
+![iii](https://user-images.githubusercontent.com/92050925/215809444-6245c9b2-4eff-40eb-9db3-3d5424e8d3bc.png)
+![jjj](https://user-images.githubusercontent.com/92050925/215809519-c5f3cd1e-df17-4354-b1d7-2eab4b8e6645.png)
+
+Here is a snapshot of the output:
+![Screenshot from 2023-01-31 10-00-28](https://user-images.githubusercontent.com/92050925/215808455-5d4108b2-cdaa-4053-9555-c365ebdfd477.png)
+
+
+
+
+
+

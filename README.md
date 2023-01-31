@@ -61,10 +61,15 @@ For example:
 Multiple clients can chat with each other through connecting to a central server which keeps their names, ids, and archived messages. The most important modules are:
 
 1) Client: Clients can send some commands to the server and get the results. The commands are: 
+2) 
 CONNECT: At the beginning of the connection, a packet containing this command is sent to server, and the server responds with CONNACK.
+
 LIST: Through this command, the client can see other clients whom he can chat with. Its feedback is LISTREPLY.
+
 SEND: A client can send a message to another person connected to the server via this command. Its feedback is SENDREPLY (stating wheter the message has been received by the server or not).
+
 INFO: This command takes one argument, the id of a user. If that user is present, the response will be his name; otherwise, the payload will be empty.
+
 RECEIVE: This command is used when a user wants to figure out wheter other users have sent him any messages or not. By sending this command, the user's archived messages from other people will be shown to him.
 
 2) Server: The core module which receives messages from different clients and handles them. All the responses mentioned in the previous section are provided by this module.

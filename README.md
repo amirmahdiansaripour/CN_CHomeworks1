@@ -1,6 +1,6 @@
 # Assignments of computer network course (Fall 2022)
 
-###1: FTP_server
+### 1: FTP_server
 
 A server in which multiple clients can connect and send requires to. Each sub-module is explained in the following part.
 
@@ -41,7 +41,7 @@ How to run
 ![1-5](https://user-images.githubusercontent.com/92050925/212432075-406720e5-0dba-433a-a5e5-bdd414002daf.png)
 
 
-###2: Web Server
+### 2: Web Server
 
 A simple HTTP server with the ability to send 5-6 types of files.
 
@@ -60,7 +60,7 @@ The first page of the localhost lists all the available files in the server. You
 You can also view the HTTP requests sent and received by the server in your terminal.
 
 
-###3: CHAT_ROOM
+### 3: CHAT_ROOM
 
 Multiple clients can chat with each other through connecting to a central server which keeps their names, ids, and archived messages. The most important modules are:
 

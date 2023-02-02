@@ -42,18 +42,22 @@ How to run
 
 
 2: Web Server
+
+A simple HTTP server with the ability to send 5-6 types of files.
+
 How to run
+
+For running you need a port. Any free port number works, so let's choose 4000 for our example.
 ### Compile and run in terminal
 ```make```
 
-```./Server.out 127.0.0.1:<port number>```
+```./Server.out 127.0.0.1:4000```
 
 ### Open in browser
-Open localhost:"port number"/ in a browser
+Open localhost:4000/ in a browser
 
-For example:
-  ```./Server.out 127.0.0.1:4000```
-   http://localhost:4000
+The first page of the localhost lists all the available files in the server. You can view them by adding the file's name to the address bar.
+You can also view the HTTP requests sent and received by the server in your terminal.
 
 
 3: CHAT_ROOM

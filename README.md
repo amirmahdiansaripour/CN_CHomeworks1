@@ -59,8 +59,25 @@ For running you need a port. Any free port number works, so let's choose 4000 fo
 The first page of the localhost lists all the available files in the server. You can view them by adding the file's name to the address bar.
 You can also view the HTTP requests sent and received by the server in your terminal.
 
+makefile and executing the file:
+
+![Screenshot from 2023-02-03 12-08-20](https://user-images.githubusercontent.com/87925695/216552866-8fd5915f-c0ba-4e58-9009-f9289cf459f8.png)
+home page and the corresponding HTTP requests
+
+![Screenshot from 2023-02-03 12-09-18](https://user-images.githubusercontent.com/87925695/216552953-2ea8a4a1-462a-4a77-aa4f-70a8681277e8.png)
+
+![Screenshot from 2023-02-03 12-09-02](https://user-images.githubusercontent.com/87925695/216553041-9e01f893-f810-4c5f-82c9-2cc88fa42fb5.png)
+
+Opening an image file
+
+
+![Screenshot from 2023-02-03 12-10-21](https://user-images.githubusercontent.com/87925695/216553084-bc8999eb-4e03-4e16-bb46-49cc4d0c700c.png)
+
+![Screenshot from 2023-02-03 12-10-54](https://user-images.githubusercontent.com/87925695/216553232-d40a3c6a-eeb5-4edc-9f89-3bbaa797b530.png)
+
 
 ### 3: CHAT_ROOM
+
 
 Multiple clients can chat with each other through connecting to a central server which keeps their names, ids, and archived messages. The most important modules are:
 

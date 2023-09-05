@@ -1,12 +1,20 @@
-# Assignments of computer network course (Fall 2022)
+# Socket Programming (1st Assignment, Computer Networks Course)
 
-### 1: FTP_server
+The assignement consists of three sub-projects:
+
+1.FTP-server
+
+2.Web-server
+
+3.Chatroom
+
+## 1: FTP_server
 
 A server in which multiple clients can connect and send requires to. Each sub-module is explained in the following part.
 
 1) Server: The core module of the FTP_server, which has the responsibility of binding to two ports (data and command channel). Server then handles multiple connections through allocating a thread to each client. 
 
-![1-2](https://user-images.githubusercontent.com/92050925/212425875-b7edf9a3-2f34-431e-8b85-ee8993ede07d.png)
+![img00](./readme-images/1.png)
 
 2) Client: The client side of the connection, which sends requests to the server and gets the proper response. Each client should login before entering other requests.
 
@@ -17,7 +25,7 @@ A server in which multiple clients can connect and send requires to. Each sub-mo
 
 5) MessageHandler: This sub-module gets each request from the server and fragments it into substrings (handle method). The substrings are then processed, and the type of request with its arguments are detected. Finally, the request's response is provided through handle functions (handleDownload, handleQuit, and so on) and sent back to the server.
 
-![1-1](https://user-images.githubusercontent.com/92050925/212425098-800f6766-d97b-43c2-8008-031ca9a67d08.png)
+![img02](./readme-images/2.png)
 
 6) Response: A simple module which provides the feedback message to clients' commands. This message is sent to messageHandler, and based on the type of command, is appended to another main response or not. For example, in retr command, the message "Successful Download" is appended to the downloaded file content and sent to server. Server then splits the response and sends the content via data channel and the feedback via command channel.
 
@@ -36,12 +44,12 @@ How to run
 ``` ./Client.out ```
 
 
-![1-3](https://user-images.githubusercontent.com/92050925/212430980-098dcff5-712b-41a2-bb8f-2e050bbf34eb.png)
-![1-4](https://user-images.githubusercontent.com/92050925/212431809-57fa9e85-637a-4229-9d6e-e2094d3c881a.png)
-![1-5](https://user-images.githubusercontent.com/92050925/212432075-406720e5-0dba-433a-a5e5-bdd414002daf.png)
+![img03](./readme-images/3.png)
+![img04](./readme-images/4.png)
+![img05](./readme-images/5.png)
 
 
-### 2: Web Server
+## 2: Web Server
 
 A simple HTTP server with the ability to send 5-6 types of files.
 
@@ -61,7 +69,7 @@ You can also view the HTTP requests sent and received by the server in your term
 
 makefile and executing the file:
 
-![Screenshot from 2023-02-03 12-08-20](https://user-images.githubusercontent.com/87925695/216552866-8fd5915f-c0ba-4e58-9009-f9289cf459f8.png)
+![img06](./readme-images/6.png)
 home page and the corresponding HTTP requests
 
 ![Screenshot from 2023-02-03 12-09-18](https://user-images.githubusercontent.com/87925695/216552953-2ea8a4a1-462a-4a77-aa4f-70a8681277e8.png)
@@ -76,7 +84,7 @@ Opening an image file
 ![Screenshot from 2023-02-03 12-10-54](https://user-images.githubusercontent.com/87925695/216553232-d40a3c6a-eeb5-4edc-9f89-3bbaa797b530.png)
 
 
-### 3: CHAT_ROOM
+## 3: CHAT_ROOM
 
 
 Multiple clients can chat with each other through connecting to a central server which keeps their names, ids, and archived messages. The most important modules are:

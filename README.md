@@ -72,16 +72,16 @@ makefile and executing the file:
 ![img06](./readme-images/6.png)
 home page and the corresponding HTTP requests
 
-![Screenshot from 2023-02-03 12-09-18](https://user-images.githubusercontent.com/87925695/216552953-2ea8a4a1-462a-4a77-aa4f-70a8681277e8.png)
+![img07](./readme-images/7.png)
 
-![Screenshot from 2023-02-03 12-09-02](https://user-images.githubusercontent.com/87925695/216553041-9e01f893-f810-4c5f-82c9-2cc88fa42fb5.png)
+![img08](./readme-images/8.png)
 
 Opening an image file
 
 
-![Screenshot from 2023-02-03 12-10-21](https://user-images.githubusercontent.com/87925695/216553084-bc8999eb-4e03-4e16-bb46-49cc4d0c700c.png)
+![img09](./readme-images/9.png)
 
-![Screenshot from 2023-02-03 12-10-54](https://user-images.githubusercontent.com/87925695/216553232-d40a3c6a-eeb5-4edc-9f89-3bbaa797b530.png)
+![img10](./readme-images/10.png)
 
 
 ## 3: CHAT_ROOM
@@ -117,11 +117,11 @@ Run the following commands for client and server in the respective terminals:
 
 ```./Client.out localhost:<port> <name>```
 
-![iii](https://user-images.githubusercontent.com/92050925/215809444-6245c9b2-4eff-40eb-9db3-3d5424e8d3bc.png)
-![jjj](https://user-images.githubusercontent.com/92050925/215809519-c5f3cd1e-df17-4354-b1d7-2eab4b8e6645.png)
+![img11](./readme-images/11.png)
+![img12](./readme-images/12.png)
 
 Here is a snapshot of the output:
-![Screenshot from 2023-01-31 10-00-28](https://user-images.githubusercontent.com/92050925/215808455-5d4108b2-cdaa-4053-9555-c365ebdfd477.png)
+![img13](./readme-images/13.png)
 
 
 
